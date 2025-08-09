@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>진료시간 안내</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="schedule-container">
+        <div class="schedule-box" id="am-schedule">
+            <h2>오전 진료</h2>
+            <table>
+                <thead>
+                    <tr>
+                        <th>진료과</th>
+                        <th>진료의사</th>
+                        <th>의사상태</th>
+                    </tr>
+                </thead>
+                <tbody></tbody>
+            </table>
+        </div>
+        <div class="schedule-box" id="pm-schedule">
+            <h2>오후 진료</h2>
+            <table>
+                <thead>
+                    <tr>
+                        <th>진료과</th>
+                        <th>진료의사</th>
+                        <th>의사상태</th>
+                    </tr>
+                </thead>
+                <tbody></tbody>
+            </table>
+        </div>
+    </div>
+
+    <script>
+        const sheetId = '1m0kCyq3QI9e203Rkhh0_gTFD6Jdafn89p3-AbddZ2OU'; // 여기에 시트 ID를 붙여넣으세요.
+        const dayNames = ['일', '월', '화', '수', '목', '금', '토'];
+
+        const gidMap = {
+            '일': '1340551526',
+            '월': '166831320',
+            '화': '1050890560',
+            '수': '675567842',
+            '목': '1074220298',
+            '금': '1055010041',
+            '토': '944320917',
+        };
+
+        function fetchSchedule() {
+            const today = new Date();
+            const currentDayName = dayNames[today.getDay()];
+            const currentGid = gidMap[currentDayName];
+            
+            if (!currentGid) {
+                console.error(`Error: Gid for ${currentDayName} not found.`);
+                return;
+            }
+
+            const apiUrl = `https://docs.google.com/spreadsheets/d/${sheetId}/gviz/tq?gid=${currentGid}&tqx=out:json`;
+            
+            fetch(apiUrl)
+                .then(res => res.text())
+                .then(text => {
+                    const json = JSON.parse(text.substr(47).slice(0, -2));
+                    const rows = json.table.rows;
+                    
+                    const amTableBody = document.querySelector('#am-schedule tbody');
+                    const pmTableBody = document.querySelector('#pm-schedule tbody');
+                    amTableBody.innerHTML = '';
+                    pmTableBody.innerHTML = '';
+
+                    rows.forEach(row => {
+                        const ampm = row.c[0] ? row.c[0].v : '';
+                        let department = row.c[1] ? row.c[1].v : '';
+                        const doctor = row.c[2] ? row.c[2].v : '';
+                        const status = row.c[3] ? row.c[3].v : '';
+
+                        if (department.includes(':')) {
+                            department = department.split(':')[1].trim();
+                        }
+
+                        if (ampm === '오전') {
+                            const tr = document.createElement('tr');
+                            tr.innerHTML = `
+                                <td>${department}</td>
+                                <td>${doctor}</td>
+                                <td>${status}</td>
+                            `;
+                            amTableBody.appendChild(tr);
+                        } else if (ampm === '오후') {
+                            const tr = document.createElement('tr');
+                            tr.innerHTML = `
+                                <td>${department}</td>
+                                <td>${doctor}</td>
+                                <td>${status}</td>
+                            `;
+                            pmTableBody.appendChild(tr);
+                        }
+                    });
+                });
+        }
+
+        setInterval(fetchSchedule, 30000);
+        fetchSchedule();
+    </script>
+</body>
+</html>
