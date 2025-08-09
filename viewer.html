@@ -1,43 +1,72 @@
 <!DOCTYPE html>
-<html>
+<html lang="ko">
 <head>
-    <title>진료시간 안내</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>진료 시간 안내</title>
+    <!-- style.css 파일을 링크합니다. -->
     <link rel="stylesheet" href="style.css">
 </head>
-<body>
-    <div class="schedule-container">
-        <div class="schedule-box" id="am-schedule">
-            <h2>오전 진료</h2>
-            <table>
-                <thead>
-                    <tr>
-                        <th>진료과</th>
-                        <th>진료의사</th>
-                        <th>의사상태</th>
-                    </tr>
-                </thead>
-                <tbody></tbody>
-            </table>
-        </div>
-        <div class="schedule-box" id="pm-schedule">
-            <h2>오후 진료</h2>
-            <table>
-                <thead>
-                    <tr>
-                        <th>진료과</th>
-                        <th>진료의사</th>
-                        <th>의사상태</th>
-                    </tr>
-                </thead>
-                <tbody></tbody>
-            </table>
+<body class="flex flex-col items-center">
+
+    <!-- Header and Dropdown -->
+    <div class="header-container">
+        <h1 class="page-title">진료 현황</h1>
+        <div class="dropdown-container">
+            <select id="day-selector" class="day-selector">
+                <option value="일">일요일</option>
+                <option value="월">월요일</option>
+                <option value="화">화요일</option>
+                <option value="수">수요일</option>
+                <option value="목">목요일</option>
+                <option value="금">금요일</option>
+                <option value="토">토요일</option>
+            </select>
         </div>
     </div>
 
+    <!-- Main container for content -->
+    <div class="container">
+        <div class="schedule-container">
+            <div class="schedule-box" id="am-schedule">
+                <h2>오전 진료</h2>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>진료과</th>
+                            <th>진료의사</th>
+                            <th>의사상태</th>
+                        </tr>
+                    </thead>
+                    <tbody></tbody>
+                </table>
+                <div id="am-loading-indicator" class="loading-container" style="display:none;">
+                    데이터를 불러오는 중...
+                </div>
+            </div>
+            <div class="schedule-box" id="pm-schedule">
+                <h2>오후 진료</h2>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>진료과</th>
+                            <th>진료의사</th>
+                            <th>의사상태</th>
+                        </tr>
+                    </thead>
+                    <tbody></tbody>
+                </table>
+                <div id="pm-loading-indicator" class="loading-container" style="display:none;">
+                    데이터를 불러오는 중...
+                </div>
+            </div>
+        </div>
+    </div>
+    
     <script>
-        const sheetId = '1m0kCyq3QI9e203Rkhh0_gTFD6Jdafn89p3-AbddZ2OU'; // 여기에 시트 ID를 붙여넣으세요.
+        // Google Sheets configuration
+        const sheetId = '1m0kCyq3QI9e203Rkhh0_gTFD6Jdafn89p3-AbddZ2OU';
         const dayNames = ['일', '월', '화', '수', '목', '금', '토'];
-
         const gidMap = {
             '일': '1340551526',
             '월': '166831320',
@@ -48,62 +77,135 @@
             '토': '944320917',
         };
 
-        function fetchSchedule() {
-            const today = new Date();
-            const currentDayName = dayNames[today.getDay()];
-            const currentGid = gidMap[currentDayName];
+        // DOM elements
+        const daySelector = document.getElementById('day-selector');
+        const amTableBody = document.querySelector('#am-schedule tbody');
+        const pmTableBody = document.querySelector('#pm-schedule tbody');
+        const amLoadingIndicator = document.getElementById('am-loading-indicator');
+        const pmLoadingIndicator = document.getElementById('pm-loading-indicator');
+
+        /**
+         * Fetches and displays the schedule data for a given day.
+         * @param {string} dayName The single-character Korean name of the day (e.g., '월').
+         */
+        function fetchSchedule(dayName) {
+            const currentGid = gidMap[dayName];
             
             if (!currentGid) {
-                console.error(`Error: Gid for ${currentDayName} not found.`);
+                console.error(`Error: Gid for ${dayName} not found.`);
+                amTableBody.innerHTML = '';
+                pmTableBody.innerHTML = '';
+                amLoadingIndicator.style.display = 'flex';
+                amLoadingIndicator.textContent = '선택된 요일에 대한 데이터가 없습니다.';
+                pmLoadingIndicator.style.display = 'flex';
+                pmLoadingIndicator.textContent = '선택된 요일에 대한 데이터가 없습니다.';
                 return;
             }
 
-            const apiUrl = `https://docs.google.com/spreadsheets/d/${sheetId}/gviz/tq?gid=${currentGid}&tqx=out:json`;
+            // Show loading indicators
+            amTableBody.innerHTML = '';
+            pmTableBody.innerHTML = '';
+            amLoadingIndicator.style.display = 'flex';
+            pmLoadingIndicator.style.display = 'flex';
+            amLoadingIndicator.textContent = '데이터를 불러오는 중...';
+            pmLoadingIndicator.textContent = '데이터를 불러오는 중...';
             
+            const apiUrl = `https://docs.google.com/spreadsheets/d/${sheetId}/gviz/tq?gid=${currentGid}&tqx=out:json`;
+
             fetch(apiUrl)
                 .then(res => res.text())
                 .then(text => {
-                    const json = JSON.parse(text.substr(47).slice(0, -2));
-                    const rows = json.table.rows;
-                    
-                    const amTableBody = document.querySelector('#am-schedule tbody');
-                    const pmTableBody = document.querySelector('#pm-schedule tbody');
-                    amTableBody.innerHTML = '';
-                    pmTableBody.innerHTML = '';
+                    // Hide loading indicators
+                    amLoadingIndicator.style.display = 'none';
+                    pmLoadingIndicator.style.display = 'none';
 
-                    rows.forEach(row => {
-                        const ampm = row.c[0] ? row.c[0].v : '';
-                        let department = row.c[1] ? row.c[1].v : '';
-                        const doctor = row.c[2] ? row.c[2].v : '';
-                        const status = row.c[3] ? row.c[3].v : '';
+                    try {
+                        const json = JSON.parse(text.substr(47).slice(0, -2));
+                        const rows = json.table.rows;
+                        
+                        // Clear existing table data
+                        amTableBody.innerHTML = '';
+                        pmTableBody.innerHTML = '';
 
-                        if (department.includes(':')) {
-                            department = department.split(':')[1].trim();
+                        if (rows.length === 0) {
+                            amTableBody.innerHTML = '<tr><td colspan="3" class="text-center">데이터가 없습니다.</td></tr>';
+                            pmTableBody.innerHTML = '<tr><td colspan="3" class="text-center">데이터가 없습니다.</td></tr>';
+                            return;
                         }
 
-                        if (ampm === '오전') {
+                        rows.forEach(row => {
+                            const ampm = row.c[0] ? row.c[0].v : '';
+                            let department = row.c[1] ? row.c[1].v : '';
+                            const doctor = row.c[2] ? row.c[2].v : '';
+                            const status = row.c[3] ? row.c[3].v : '';
+
+                            if (department.includes(':')) {
+                                department = department.split(':')[1].trim();
+                            }
+
                             const tr = document.createElement('tr');
                             tr.innerHTML = `
                                 <td>${department}</td>
                                 <td>${doctor}</td>
                                 <td>${status}</td>
                             `;
-                            amTableBody.appendChild(tr);
-                        } else if (ampm === '오후') {
-                            const tr = document.createElement('tr');
-                            tr.innerHTML = `
-                                <td>${department}</td>
-                                <td>${doctor}</td>
-                                <td>${status}</td>
-                            `;
-                            pmTableBody.appendChild(tr);
-                        }
-                    });
+
+                            if (ampm === '오전') {
+                                amTableBody.appendChild(tr);
+                            } else if (ampm === '오후') {
+                                pmTableBody.appendChild(tr);
+                            }
+                        });
+                    } catch (e) {
+                        console.error("JSON 파싱 오류:", e);
+                        amTableBody.innerHTML = '<tr><td colspan="3" class="text-center">데이터 로딩에 실패했습니다.</td></tr>';
+                        pmTableBody.innerHTML = '<tr><td colspan="3" class="text-center">데이터 로딩에 실패했습니다.</td></tr>';
+                    }
+                })
+                .catch(error => {
+                    console.error("데이터 불러오기 오류:", error);
+                    amLoadingIndicator.style.display = 'none';
+                    pmLoadingIndicator.style.display = 'none';
+                    amTableBody.innerHTML = '<tr><td colspan="3" class="text-center">데이터 로딩에 실패했습니다.</td></tr>';
+                    pmTableBody.innerHTML = '<tr><td colspan="3" class="text-center">데이터 로딩에 실패했습니다.</td></tr>';
                 });
         }
 
-        setInterval(fetchSchedule, 30000);
-        fetchSchedule();
+        // Event listener for the dropdown change
+        daySelector.addEventListener('change', (event) => {
+            const selectedDay = event.target.value;
+            localStorage.setItem('selectedDay', selectedDay);
+            fetchSchedule(selectedDay);
+        });
+
+        // Initial setup on page load
+        document.addEventListener('DOMContentLoaded', () => {
+            // Get the day from local storage, or default to the current day
+            let selectedDay = localStorage.getItem('selectedDay');
+            if (!selectedDay) {
+                selectedDay = dayNames[new Date().getDay()];
+            }
+            
+            // Set the dropdown to the correct value
+            daySelector.value = selectedDay;
+            
+            // Initial data fetch
+            fetchSchedule(selectedDay);
+            
+            // Set up auto-refresh every 30 seconds
+            setInterval(() => {
+                const currentSelectedDay = localStorage.getItem('selectedDay');
+                if (currentSelectedDay) {
+                    daySelector.value = currentSelectedDay;
+                    fetchSchedule(currentSelectedDay);
+                } else {
+                    // Fallback to current day if localStorage is empty
+                    const today = dayNames[new Date().getDay()];
+                    daySelector.value = today;
+                    fetchSchedule(today);
+                }
+            }, 30000); // 30초 = 30000ms
+        });
     </script>
 </body>
 </html>
