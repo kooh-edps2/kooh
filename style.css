@@ -1,0 +1,46 @@
+/* 기존 설정 제거 및 새로운 CSS 설정 적용 */
+body { 
+    font-family: 'Malgun Gothic', '맑은 고딕', sans-serif; 
+    display: flex; 
+    margin: 0; 
+    padding: 10px; /* 전체 여백 줄임 */
+    box-sizing: border-box;
+}
+.schedule-container { 
+    display: flex; 
+    width: 100%; 
+    height: calc(100vh - 20px); /* 화면 높이 조정 */
+}
+.schedule-box { 
+    flex: 1; 
+    padding: 15px; /* 박스 내부 여백 조정 */
+    box-sizing: border-box; 
+    border: 1px solid #ccc; 
+    margin: 5px; /* 박스 사이 여백 조정 */
+    border-radius: 6px; 
+}
+.schedule-box h2 { 
+    text-align: center; 
+    color: #333; 
+    margin-top: 0; 
+    margin-bottom: 15px; /* 제목 아래 여백 조정 */
+    font-size: 1.8em; /* 제목 글자 크기 키움 */
+}
+table { 
+    width: 100%; 
+    border-collapse: collapse; 
+    margin-top: 10px; 
+    font-size: 1.1em; /* 표 본문 글자 크기 키움 */
+}
+th, td { 
+    border: 1px solid #bbb; 
+    padding: 12px; /* 셀 내부 여백 키움 */
+    text-align: center; 
+}
+th { 
+    background-color: #f0f0f0; 
+    font-weight: bold; 
+    font-size: 1.2em; /* 헤더 글자 크기 키움 */
+}
+.closed { color: red; font-weight: bold; }
+.surgery { color: blue; font-weight: bold; }
