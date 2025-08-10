@@ -79,13 +79,22 @@ th {
     color: #444;
 }
 
+/* 특정 상태에 따른 셀 스타일 */
 .closed {
-    background-color: #ffe6e6;
+    background-color: #ffe6e6 !important;
     color: #cc0000;
     font-weight: bold;
 }
 .surgery {
-    background-color: #e6f7ff;
+    background-color: #e6f7ff !important;
     color: #0000cc;
     font-weight: bold;
 }
+
+/* 진료과에 따른 행 배경색 */
+.general-surgery { background-color: #e6ffe6; }
+.internal-medicine { background-color: #fffacd; }
+.thyroid-breast { background-color: #ffdab9; }
+.neurosurgery { background-color: #e0ffff; }
+.orthopedics { background-color: #d8bfd8; }
+.obgyn { background-color: #ffc0cb; }
