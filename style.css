@@ -10,6 +10,7 @@
 
 body {
     font-family: 'S-Core Dream', 'Malgun Gothic', '맑은 고딕', sans-serif;
+    font-size: 1.2vw; /* 폰트 크기를 viewport 너비에 비례하게 설정 */
     display: flex;
     flex-direction: column; 
     align-items: center; 
@@ -80,14 +81,12 @@ th {
 }
 
 /* 특정 상태에 따른 셀 스타일 */
-.closed {
-    background-color: #ffe6e6 !important;
-    color: #cc0000;
+.closed { /* 휴진일 경우 */
+    color: #0000cc;          /* 파란색 글자 */
     font-weight: bold;
 }
-.surgery {
-    background-color: #e6f7ff !important;
-    color: #0000cc;
+.surgery { /* 수술일 경우 */
+    color: #cc0000;          /* 빨간색 글자 */
     font-weight: bold;
 }
 
