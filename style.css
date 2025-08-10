@@ -10,14 +10,14 @@
 
 body {
     font-family: 'S-Core Dream', 'Malgun Gothic', '맑은 고딕', sans-serif;
-    font-size: 1.2vw;
+    font-size: 2vw; /* 폰트 크기를 더 크게 설정 */
     display: flex;
-    flex-direction: column; 
-    align-items: center; 
+    flex-direction: column;
+    align-items: center;
     margin: 0;
-    padding: 20px;
+    padding: 10px; /* 전체 여백 최소화 */
     box-sizing: border-box;
-    background-color: #f0f8ff; 
+    background-color: #f0f8ff;
 }
 
 .main-title {
@@ -31,22 +31,21 @@ body {
 
 .schedule-container {
     display: flex;
-    width: 90%;
-    max-width: 1200px;
+    width: 100%; /* 너비를 100%로 설정하여 화면 전체 사용 */
     height: auto;
     background-color: rgba(255, 255, 255, 0.9);
     border-radius: 10px;
-    padding: 20px;
+    padding: 10px; /* 여백 최소화 */
     box-sizing: border-box;
     box-shadow: 0 4px 8px rgba(0,0,0,0.1);
 }
 
 .schedule-box {
     flex: 1;
-    padding: 15px;
+    padding: 10px; /* 여백 최소화 */
     box-sizing: border-box;
     border: 1px solid #ddd;
-    margin: 10px;
+    margin: 5px; /* 여백 최소화 */
     border-radius: 8px;
     background-color: #fff;
 }
@@ -56,7 +55,7 @@ body {
     color: #444;
     margin-top: 0;
     margin-bottom: 15px;
-    font-size: 1.8em;
+    font-size: 1.5em; /* 제목 크기 조정 */
     font-weight: bold;
 }
 
@@ -64,33 +63,33 @@ table {
     width: 100%;
     border-collapse: collapse;
     margin-top: 10px;
-    font-size: 1.1em;
+    font-size: 1em; /* vw 단위에 맞게 상대 크기 조정 */
 }
 
 th, td {
     border: 1px solid #ddd;
-    padding: 12px;
+    padding: 10px; /* 여백 최소화 */
     text-align: center;
 }
 
 th {
     background-color: #f0f8ff;
     font-weight: bold;
-    font-size: 1.2em;
+    font-size: 1.1em; /* 헤더 글자 크기 조정 */
     color: #444;
 }
 
 /* 특정 상태에 따른 셀 스타일 */
-.closed { /* 휴진일 경우 */
-    color: #0000cc;          /* 파란색 글자 */
+.closed {
+    color: #0000cc;
     font-weight: bold;
 }
-.surgery { /* 수술일 경우 */
-    color: #cc0000;          /* 빨간색 글자 */
+.surgery {
+    color: #cc0000;
     font-weight: bold;
 }
-.finished { /* 마감일 경우 */
-    color: #008000;          /* 초록색 글자 */
+.finished {
+    color: #008000;
     font-weight: bold;
 }
 
