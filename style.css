@@ -3,7 +3,7 @@
      src: url('https://fastly.jsdelivr.net/gh/projectnoonnu/noonfonts_six@1.2/S-CoreDream-3Light.woff') format('woff');
      font-weight: normal;
      font-style: normal;
-     font-display: swap; /* 폰트 로딩 최적화 */
+     font-display: swap; 
 }
 
 body {
@@ -16,6 +16,8 @@ body {
     padding: 10px;
     box-sizing: border-box;
     background-color: #f0f8ff; 
+    height: 100vh; /* 화면 전체 높이 사용 */
+    overflow: hidden; /* 스크롤바 숨기기 */
 }
 
 .main-title {
@@ -29,8 +31,9 @@ body {
 
 .schedule-container {
     display: flex;
+    flex: 1; /* 남은 공간을 모두 차지하도록 설정 */
     width: 100%;
-    height: auto;
+    height: calc(100vh - 80px); /* 제목과 여백을 제외한 높이 계산 */
     background-color: rgba(255, 255, 255, 0.9);
     border-radius: 10px;
     padding: 10px;
@@ -40,12 +43,15 @@ body {
 
 .schedule-box {
     flex: 1;
+    display: flex; /* 내부 콘텐츠를 위한 flexbox 설정 */
+    flex-direction: column;
     padding: 10px;
     box-sizing: border-box;
     border: 1px solid #ddd;
     margin: 5px;
     border-radius: 8px;
     background-color: #fff;
+    overflow-y: auto; /* 내용이 넘칠 경우 스크롤 허용 */
 }
 
 .schedule-box h2 {
