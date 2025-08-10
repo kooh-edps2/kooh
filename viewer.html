@@ -5,6 +5,7 @@
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
+    <h1 class="main-title">구병원 진료 스케줄</h1>
     <div class="schedule-container">
         <div class="schedule-box" id="am-schedule">
             <h2>오전 진료</h2>
@@ -35,7 +36,7 @@
     </div>
 
     <script>
-        const sheetId = '1m0kCyq3QI9e203Rkhh0_gTFD6Jdafn89p3-AbddZ2OU'; // 여기에 시트 ID를 붙여넣으세요.
+        const sheetId = '1m0kCyq3QI9e203Rkhh0_gTFD6Jdafn89p3-AbddZ2OU'; 
         const dayNames = ['일', '월', '화', '수', '목', '금', '토'];
 
         const gidMap = {
@@ -81,21 +82,24 @@
                             department = department.split(':')[1].trim();
                         }
 
+                        // 상태에 따라 클래스 추가
+                        let statusClass = '';
+                        if (status === '휴진') {
+                            statusClass = 'closed';
+                        } else if (status === '수술중') {
+                            statusClass = 'surgery';
+                        }
+
+                        const tr = document.createElement('tr');
+                        tr.innerHTML = `
+                            <td>${department}</td>
+                            <td>${doctor}</td>
+                            <td class="${statusClass}">${status}</td>
+                        `;
+                        
                         if (ampm === '오전') {
-                            const tr = document.createElement('tr');
-                            tr.innerHTML = `
-                                <td>${department}</td>
-                                <td>${doctor}</td>
-                                <td>${status}</td>
-                            `;
                             amTableBody.appendChild(tr);
                         } else if (ampm === '오후') {
-                            const tr = document.createElement('tr');
-                            tr.innerHTML = `
-                                <td>${department}</td>
-                                <td>${doctor}</td>
-                                <td>${status}</td>
-                            `;
                             pmTableBody.appendChild(tr);
                         }
                     });
