@@ -82,6 +82,21 @@
                             department = department.split(':')[1].trim();
                         }
 
+                        let departmentClass = '';
+                        if (department === '일반외과') {
+                            departmentClass = 'general-surgery';
+                        } else if (department === '내과') {
+                            departmentClass = 'internal-medicine';
+                        } else if (department === '갑상선유방센터') {
+                            departmentClass = 'thyroid-breast';
+                        } else if (department === '신경외과') {
+                            departmentClass = 'neurosurgery';
+                        } else if (department === '정형외과') {
+                            departmentClass = 'orthopedics';
+                        } else if (department === '산부인과') {
+                            departmentClass = 'obgyn';
+                        }
+                        
                         let statusClass = '';
                         if (status === '휴진') {
                             statusClass = 'closed';
@@ -90,6 +105,7 @@
                         }
 
                         const tr = document.createElement('tr');
+                        tr.className = departmentClass;
                         tr.innerHTML = `
                             <td>${department}</td>
                             <td>${doctor}</td>
