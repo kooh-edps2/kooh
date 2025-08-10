@@ -8,16 +8,16 @@
 
 body {
     font-family: 'S-CoreDream', 'Malgun Gothic', '맑은 고딕', sans-serif;
-    font-size: 2vw; 
+    font-size: 1.5vw; /* 폰트 크기 조정 */
     display: flex;
     flex-direction: column; 
     align-items: center; 
     margin: 0;
-    padding: 10px;
+    padding: 20px;
     box-sizing: border-box;
     background-color: #f0f8ff; 
-    height: 100vh; /* 화면 전체 높이 사용 */
-    overflow: hidden; /* 스크롤바 숨기기 */
+    height: 100vh;
+    overflow: hidden; 
 }
 
 .main-title {
@@ -31,27 +31,27 @@ body {
 
 .schedule-container {
     display: flex;
-    flex: 1; /* 남은 공간을 모두 차지하도록 설정 */
-    width: 100%;
-    height: calc(100vh - 80px); /* 제목과 여백을 제외한 높이 계산 */
+    flex: 1; 
+    width: 95%; /* 컨테이너 너비 재조정 */
+    height: calc(100vh - 80px);
     background-color: rgba(255, 255, 255, 0.9);
     border-radius: 10px;
-    padding: 10px;
+    padding: 20px;
     box-sizing: border-box;
     box-shadow: 0 4px 8px rgba(0,0,0,0.1);
 }
 
 .schedule-box {
     flex: 1;
-    display: flex; /* 내부 콘텐츠를 위한 flexbox 설정 */
+    display: flex;
     flex-direction: column;
-    padding: 10px;
+    padding: 15px; /* 내부 여백 조정 */
     box-sizing: border-box;
     border: 1px solid #ddd;
-    margin: 5px;
+    margin: 20px; /* **표 사이의 간격을 넓힘** */
     border-radius: 8px;
     background-color: #fff;
-    overflow-y: auto; /* 내용이 넘칠 경우 스크롤 허용 */
+    overflow-y: auto;
 }
 
 .schedule-box h2 {
