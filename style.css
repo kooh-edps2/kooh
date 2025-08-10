@@ -1,23 +1,21 @@
 @font-face {
-    font-family: 'S-Core Dream';
-    font-weight: 500;
-    font-style: normal;
-    src: url('https://cdn.jsdelivr.net/gh/webfontz/S-CoreDream/S-CoreDream-5Medium.woff2') format('woff2'),
-         url('https://cdn.jsdelivr.net/gh/webfontz/S-CoreDream/S-CoreDream-5Medium.woff') format('woff'),
-         url('https://cdn.jsdelivr.net/gh/webfontz/S-CoreDream/S-CoreDream-5Medium.ttf') format('truetype');
-    font-display: swap;
+     font-family: 'S-CoreDream';
+     src: url('https://fastly.jsdelivr.net/gh/projectnoonnu/noonfonts_six@1.2/S-CoreDream-3Light.woff') format('woff');
+     font-weight: normal;
+     font-style: normal;
+     font-display: swap; /* 폰트 로딩 최적화 */
 }
 
 body {
-    font-family: 'S-Core Dream', 'Malgun Gothic', '맑은 고딕', sans-serif;
-    font-size: 2vw; /* 폰트 크기를 더 크게 설정 */
+    font-family: 'S-CoreDream', 'Malgun Gothic', '맑은 고딕', sans-serif;
+    font-size: 2vw; 
     display: flex;
-    flex-direction: column;
-    align-items: center;
+    flex-direction: column; 
+    align-items: center; 
     margin: 0;
-    padding: 10px; /* 전체 여백 최소화 */
+    padding: 10px;
     box-sizing: border-box;
-    background-color: #f0f8ff;
+    background-color: #f0f8ff; 
 }
 
 .main-title {
@@ -31,21 +29,21 @@ body {
 
 .schedule-container {
     display: flex;
-    width: 100%; /* 너비를 100%로 설정하여 화면 전체 사용 */
+    width: 100%;
     height: auto;
     background-color: rgba(255, 255, 255, 0.9);
     border-radius: 10px;
-    padding: 10px; /* 여백 최소화 */
+    padding: 10px;
     box-sizing: border-box;
     box-shadow: 0 4px 8px rgba(0,0,0,0.1);
 }
 
 .schedule-box {
     flex: 1;
-    padding: 10px; /* 여백 최소화 */
+    padding: 10px;
     box-sizing: border-box;
     border: 1px solid #ddd;
-    margin: 5px; /* 여백 최소화 */
+    margin: 5px;
     border-radius: 8px;
     background-color: #fff;
 }
@@ -55,7 +53,7 @@ body {
     color: #444;
     margin-top: 0;
     margin-bottom: 15px;
-    font-size: 1.5em; /* 제목 크기 조정 */
+    font-size: 1.5em;
     font-weight: bold;
 }
 
@@ -63,23 +61,22 @@ table {
     width: 100%;
     border-collapse: collapse;
     margin-top: 10px;
-    font-size: 1em; /* vw 단위에 맞게 상대 크기 조정 */
+    font-size: 1em;
 }
 
 th, td {
     border: 1px solid #ddd;
-    padding: 10px; /* 여백 최소화 */
+    padding: 10px;
     text-align: center;
 }
 
 th {
     background-color: #f0f8ff;
     font-weight: bold;
-    font-size: 1.1em; /* 헤더 글자 크기 조정 */
+    font-size: 1.1em;
     color: #444;
 }
 
-/* 특정 상태에 따른 셀 스타일 */
 .closed {
     color: #0000cc;
     font-weight: bold;
@@ -93,7 +90,6 @@ th {
     font-weight: bold;
 }
 
-/* 진료과에 따른 행 배경색 */
 .general-surgery { background-color: #e6ffe6; }
 .internal-medicine { background-color: #fffacd; }
 .thyroid-breast { background-color: #ffdab9; }
