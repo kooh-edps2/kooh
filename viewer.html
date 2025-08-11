@@ -37,11 +37,8 @@
             </table>
         </div>
     </div>
-    <script>
-        dayjs.extend(dayjs_plugin_weekday);
-        dayjs.extend(dayjs_plugin_isBetween);
-
-        const sheetId = '1m0kCyq3QI9e203Rkhh0_gTFD6Jdafn89p3-AbddZ2OU';
+ <script>
+        const sheetId = '1m0kCyq3QI9e203Rkhh0_gTFD6Jdafn89p3-AbddZ2OU'; 
         const dayNames = ['일', '월', '화', '수', '목', '금', '토'];
 
         const gidMap = {
@@ -54,78 +51,83 @@
             '토': '944320917',
         };
 
-        const now = dayjs();
-        const todayName = dayNames[now.weekday()];
-        const todayGid = gidMap[todayName];
-        
-        const sheetUrl = `https://docs.google.com/spreadsheets/d/${sheetId}/e/2PACX-1vT_Qf58i_Q_h7tDk8t5m-jY2o61T1g7X_F2_o7q4J7u_j7j5u/pub?gid=${todayGid}&single=true&output=csv`;
+        function fetchSchedule() {
+            const today = new Date();
+            const currentDayName = dayNames[today.getDay()];
+            const currentGid = gidMap[currentDayName];
+            
+            if (!currentGid) {
+                console.error(`Error: Gid for ${currentDayName} not found.`);
+                return;
+            }
 
-        function getSheetData() {
-            fetch(sheetUrl)
-                .then(response => response.text())
+            const apiUrl = `https://docs.google.com/spreadsheets/d/${sheetId}/gviz/tq?gid=${currentGid}&tqx=out:json`;
+            
+            fetch(apiUrl)
+                .then(res => res.text())
                 .then(text => {
-                    const rows = text.split('\n').slice(1);
-                    const amBody = document.querySelector('#am-box tbody');
-                    const pmBody = document.querySelector('#pm-box tbody');
-                    amBody.innerHTML = '';
-                    pmBody.innerHTML = '';
+                    const json = JSON.parse(text.substr(47).slice(0, -2));
+                    const rows = json.table.rows;
+                    
+                    const amTableBody = document.querySelector('#am-schedule tbody');
+                    const pmTableBody = document.querySelector('#pm-schedule tbody');
+                    amTableBody.innerHTML = '';
+                    pmTableBody.innerHTML = '';
 
                     rows.forEach(row => {
-                        const columns = row.split(',');
-                        if (columns.length < 4) return;
+                        const ampm = row.c[0] ? row.c[0].v : '';
+                        let department = row.c[1] ? row.c[1].v : '';
+                        const doctor = row.c[2] ? row.c[2].v : '';
+                        const status = row.c[3] ? row.c[3].v : '';
 
-                        const department = columns[0].trim();
-                        const doctor = columns[1].trim();
-                        const note = columns[2].trim();
-                        const schedule = columns[3].trim();
+                        if (department.includes(':')) {
+                            department = department.split(':')[1].trim();
+                        }
 
-                        const tr = document.createElement('tr');
-                        const departmentCell = document.createElement('td');
-                        const doctorCell = document.createElement('td');
-                        const noteCell = document.createElement('td');
-
-                        departmentCell.textContent = department;
-                        doctorCell.textContent = doctor;
-                        noteCell.textContent = note;
-
-                        // 특이사항에 따른 클래스 추가
-                        if (note.includes('휴진') || note.includes('마감')) {
-                            noteCell.classList.add('closed');
-                        } else if (note.includes('수술')) {
-                            noteCell.classList.add('surgery');
-                        } else if (note.includes('종료')) {
-                            noteCell.classList.add('finished');
+                        let departmentClass = '';
+                        if (department === '일반외과') {
+                            departmentClass = 'general-surgery';
+                        } else if (department === '내과') {
+                            departmentClass = 'internal-medicine';
+                        } else if (department === '갑상선유방센터') {
+                            departmentClass = 'thyroid-breast';
+                        } else if (department === '신경외과') {
+                            departmentClass = 'neurosurgery';
+                        } else if (department === '정형외과') {
+                            departmentClass = 'orthopedics';
+                        } else if (department === '산부인과') {
+                            departmentClass = 'obgyn';
                         }
                         
-                        // 진료과에 따른 배경색 클래스 추가
-                        if (department.includes('일반외과')) {
-                            tr.classList.add('general-surgery');
-                        } else if (department.includes('내과')) {
-                            tr.classList.add('internal-medicine');
-                        } else if (department.includes('갑상선유방센터')) {
-                            tr.classList.add('thyroid-breast');
-                        } else if (department.includes('신경외과')) {
-                            tr.classList.add('neurosurgery');
-                        } else if (department.includes('정형외과')) {
-                            tr.classList.add('orthopedics');
-                        } else if (department.includes('산부인과')) {
-                            tr.classList.add('obgyn');
+                        let statusClass = '';
+                        if (status === '휴진') {
+                            statusClass = 'closed';
+                        } else if (status === '수술') {
+                            statusClass = 'surgery';
+                        } else if (status === '마감') {
+                            statusClass = 'finished';
                         }
 
-                        tr.appendChild(departmentCell);
-                        tr.appendChild(doctorCell);
-                        tr.appendChild(noteCell);
-
-                        if (schedule === '오전') {
-                            amBody.appendChild(tr);
-                        } else if (schedule === '오후') {
-                            pmBody.appendChild(tr);
+                        const tr = document.createElement('tr');
+                        tr.className = departmentClass;
+                        tr.innerHTML = `
+                            <td>${department}</td>
+                            <td>${doctor}</td>
+                            <td class="${statusClass}">${status}</td>
+                        `;
+                        
+                        if (ampm === '오전') {
+                            amTableBody.appendChild(tr);
+                        } else if (ampm === '오후') {
+                            pmTableBody.appendChild(tr);
                         }
                     });
                 });
         }
-        
-        getSheetData();
+
+        setInterval(fetchSchedule, 30000);
+        fetchSchedule();
     </script>
 </body>
 </html>
+
