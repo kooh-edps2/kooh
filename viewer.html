@@ -65,23 +65,40 @@
                 .then(res => res.text())
                 .then(text => {
                     const json = JSON.parse(text.substr(47).slice(0, -2));
-                    const rows = json.table.rows;
-                    
+                    const table = json.table;
+                    const rows = table.rows;
+                    const cols = table.cols;
+
+                    // 열 헤더를 찾기 위한 매핑
+                    let ampmIndex = -1, departmentIndex = -1, doctorIndex = -1, statusIndex = -1;
+                    cols.forEach((col, index) => {
+                        const label = col.label;
+                        if (label === '오전/오후') ampmIndex = index;
+                        else if (label === '진료과') departmentIndex = index;
+                        else if (label === '진료의사') doctorIndex = index;
+                        else if (label === '비고') statusIndex = index;
+                    });
+
+                    if ([ampmIndex, departmentIndex, doctorIndex, statusIndex].includes(-1)) {
+                        console.error('Error: Required column headers not found.');
+                        return;
+                    }
+
                     const amTableBody = document.querySelector('#am-schedule');
                     const pmTableBody = document.querySelector('#pm-schedule');
                     amTableBody.innerHTML = '';
                     pmTableBody.innerHTML = '';
 
                     rows.forEach(row => {
-                        const ampm = row.c[0] ? row.c[0].v : '';
-                        let department = row.c[1] ? row.c[1].v : '';
-                        const doctor = row.c[2] ? row.c[2].v : '';
-                        const status = row.c[3] ? row.c[3].v : '';
+                        const ampm = row.c[ampmIndex] ? row.c[ampmIndex].v : '';
+                        let department = row.c[departmentIndex] ? row.c[departmentIndex].v : '';
+                        const doctor = row.c[doctorIndex] ? row.c[doctorIndex].v : '';
+                        const status = row.c[statusIndex] ? row.c[statusIndex].v : '';
 
                         if (department.includes(':')) {
                             department = department.split(':')[1].trim();
                         }
-
+                        
                         let departmentClass = '';
                         if (department === '일반외과') {
                             departmentClass = 'general-surgery';
@@ -96,7 +113,7 @@
                         } else if (department === '산부인과') {
                             departmentClass = 'obgyn';
                         }
-                        
+
                         let statusClass = '';
                         if (status === '휴진') {
                             statusClass = 'closed';
