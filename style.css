@@ -57,7 +57,14 @@ body {
     border: 1px solid #ddd;
     margin: 1vh; /* 표 사이의 간격 최소화 */
     border-radius: 8px;
-    background-color: #fff;
+}
+
+#am-box {
+    background-color: #e9e9e9; /* 옅은 회색 배경색 적용 */
+}
+
+#pm-box {
+    background-color: #fff; /* 흰색 배경색 적용 */
 }
 
 .schedule-box h2 {
@@ -98,22 +105,4 @@ th {
     font-weight: bold;
 }
 .surgery {
-    color: #cc0000;
-    font-weight: bold;
-}
-.finished {
-    color: #008000;
-    font-weight: bold;
-}
-
-.general-surgery { background-color: #e6ffe6; }
-.internal-medicine { background-color: #fffacd; }
-.thyroid-breast { background-color: #ffdab9; }
-.neurosurgery { background-color: #e0ffff; }
-.orthopedics { background-color: #d8bfd8; }
-.obgyn { background-color: #ffc0cb; }
-
-
-
-
-
+    color: #cc000
