@@ -3,11 +3,14 @@
 <head>
     <title>진료시간 안내</title>
     <link rel="stylesheet" href="style.css">
+    <script src="https://cdn.jsdelivr.net/npm/dayjs@1.10.4/dayjs.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/dayjs@1.10.4/plugin/weekday.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/dayjs@1.10.4/plugin/isBetween.js"></script>
 </head>
 <body>
     <h1 class="main-title">구병원 진료 스케줄</h1>
     <div class="schedule-container">
-        <div class="schedule-box" id="am-schedule">
+        <div class="schedule-box" id="am-box">
             <h2>오전 진료</h2>
             <table>
                 <thead>
@@ -20,7 +23,7 @@
                 <tbody></tbody>
             </table>
         </div>
-        <div class="schedule-box" id="pm-schedule">
+        <div class="schedule-box" id="pm-box">
             <h2>오후 진료</h2>
             <table>
                 <thead>
@@ -34,97 +37,91 @@
             </table>
         </div>
     </div>
-
     <script>
-        const sheetId = '1m0kCyq3QI9e203Rkhh0_gTFD6Jdafn89p3-AbddZ2OU'; 
-        const dayNames = ['일', '월', '화', '수', '목', '금', '토'];
+        dayjs.extend(dayjs_plugin_weekday);
+        dayjs.extend(dayjs_plugin_isBetween);
 
-        const gidMap = {
-            '일': '1340551526',
-            '월': '166831320',
-            '화': '1050890560',
-            '수': '675567842',
-            '목': '1074220298',
-            '금': '1055010041',
-            '토': '944320917',
-        };
+        const sheetUrl = "https://docs.google.com/spreadsheets/d/e/2PACX-1vT_Qf58i_Q_h7tDk8t5m-jY2o61T1g7X_F2_o7q4J7u_j7j5u/pub?gid=0&single=true&output=csv";
 
-        function fetchSchedule() {
-            const today = new Date();
-            const currentDayName = dayNames[today.getDay()];
-            const currentGid = gidMap[currentDayName];
-            
-            if (!currentGid) {
-                console.error(`Error: Gid for ${currentDayName} not found.`);
-                return;
-            }
+        const now = dayjs();
+        const weekday = now.weekday(); 
+        const weekdays = ['일', '월', '화', '수', '목', '금', '토'];
+        const todayName = weekdays[weekday];
 
-            const apiUrl = `https://docs.google.com/spreadsheets/d/${sheetId}/gviz/tq?gid=${currentGid}&tqx=out:json`;
-            
-            fetch(apiUrl)
-                .then(res => res.text())
+        function getSheetData() {
+            fetch(sheetUrl)
+                .then(response => response.text())
                 .then(text => {
-                    const json = JSON.parse(text.substr(47).slice(0, -2));
-                    const rows = json.table.rows;
-                    
-                    const amTableBody = document.querySelector('#am-schedule tbody');
-                    const pmTableBody = document.querySelector('#pm-schedule tbody');
-                    amTableBody.innerHTML = '';
-                    pmTableBody.innerHTML = '';
+                    const rows = text.split('\n').slice(1);
+                    const amBody = document.querySelector('#am-box tbody');
+                    const pmBody = document.querySelector('#pm-box tbody');
+                    amBody.innerHTML = '';
+                    pmBody.innerHTML = '';
 
                     rows.forEach(row => {
-                        const ampm = row.c[0] ? row.c[0].v : '';
-                        let department = row.c[1] ? row.c[1].v : '';
-                        const doctor = row.c[2] ? row.c[2].v : '';
-                        const status = row.c[3] ? row.c[3].v : '';
+                        const columns = row.split(',');
+                        if (columns.length < 5) return;
 
-                        if (department.includes(':')) {
-                            department = department.split(':')[1].trim();
-                        }
+                        const day = columns[0].trim();
+                        if (day !== todayName) return;
 
-                        let departmentClass = '';
-                        if (department === '일반외과') {
-                            departmentClass = 'general-surgery';
-                        } else if (department === '내과') {
-                            departmentClass = 'internal-medicine';
-                        } else if (department === '갑상선유방센터') {
-                            departmentClass = 'thyroid-breast';
-                        } else if (department === '신경외과') {
-                            departmentClass = 'neurosurgery';
-                        } else if (department === '정형외과') {
-                            departmentClass = 'orthopedics';
-                        } else if (department === '산부인과') {
-                            departmentClass = 'obgyn';
-                        }
-                        
-                        let statusClass = '';
-                        if (status === '휴진') {
-                            statusClass = 'closed';
-                        } else if (status === '수술') {
-                            statusClass = 'surgery';
-                        } else if (status === '마감') {
-                            statusClass = 'finished';
-                        }
+                        const department = columns[1].trim();
+                        const doctor = columns[2].trim();
+                        const note = columns[3].trim();
+                        const schedule = columns[4].trim();
 
                         const tr = document.createElement('tr');
-                        tr.className = departmentClass;
-                        tr.innerHTML = `
-                            <td>${department}</td>
-                            <td>${doctor}</td>
-                            <td class="${statusClass}">${status}</td>
-                        `;
+                        const departmentCell = document.createElement('td');
+                        const doctorCell = document.createElement('td');
+                        const noteCell = document.createElement('td');
+
+                        departmentCell.textContent = department;
+                        doctorCell.textContent = doctor;
+                        noteCell.textContent = note;
+
+                        // 특이사항에 따른 클래스 추가
+                        if (note.includes('휴진') || note.includes('마감')) {
+                            noteCell.classList.add('closed');
+                        } else if (note.includes('수술')) {
+                            noteCell.classList.add('surgery');
+                        } else if (note.includes('종료')) {
+                            noteCell.classList.add('finished');
+                        }
                         
-                        if (ampm === '오전') {
-                            amTableBody.appendChild(tr);
-                        } else if (ampm === '오후') {
-                            pmTableBody.appendChild(tr);
+                        // 진료과에 따른 배경색 클래스 추가
+                        if (department.includes('일반외과')) {
+                            tr.classList.add('general-surgery');
+                        } else if (department.includes('내과')) {
+                            tr.classList.add('internal-medicine');
+                        } else if (department.includes('갑상선유방센터')) {
+                            tr.classList.add('thyroid-breast');
+                        } else if (department.includes('신경외과')) {
+                            tr.classList.add('neurosurgery');
+                        } else if (department.includes('정형외과')) {
+                            tr.classList.add('orthopedics');
+                        } else if (department.includes('산부인과')) {
+                            tr.classList.add('obgyn');
+                        }
+
+                        tr.appendChild(departmentCell);
+                        tr.appendChild(doctorCell);
+                        tr.appendChild(noteCell);
+
+                        if (schedule === '오전') {
+                            amBody.appendChild(tr);
+                        } else if (schedule === '오후') {
+                            pmBody.appendChild(tr);
                         }
                     });
                 });
         }
+        
+        getSheetData();
 
-        setInterval(fetchSchedule, 30000);
-        fetchSchedule();
+        // 30초마다 페이지를 새로고침하는 코드
+        setInterval(function() {
+            location.reload();
+        }, 30000);
     </script>
 </body>
 </html>
