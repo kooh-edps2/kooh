@@ -8,12 +8,12 @@
 
 body {
     font-family: 'S-CoreDream', 'Malgun Gothic', '맑은 고딕', sans-serif;
-    font-size: 2.5vh; /* 폰트 크기를 화면 높이에 비례하게 설정 */
+    font-size: 2.5vh;
     display: flex;
     flex-direction: column;
     align-items: center;
     margin: 0;
-    padding: 1vh; /* body 여백을 최소화 */
+    padding: 1vh;
     box-sizing: border-box;
     background-color: #f0f8ff;
     background-image: repeating-linear-gradient(
@@ -30,8 +30,8 @@ body {
 .main-title {
     text-align: center;
     color: #1a5678;
-    margin: 1vh 0; /* 제목 위아래 여백을 최소화 */
-    font-size: 4vh; /* 제목 폰트 크기 조정 */
+    margin: 1vh 0;
+    font-size: 4vh;
     font-weight: bold;
     letter-spacing: 2px;
 }
@@ -39,11 +39,11 @@ body {
 .schedule-container {
     display: flex;
     flex: 1;
-    width: 98%; /* 너비를 98%로 늘림 */
-    height: 100%; /* 남은 높이를 모두 사용 */
+    width: 98%;
+    height: 100%;
     background-color: rgba(255, 255, 255, 0.85);
     border-radius: 10px;
-    padding: 1vh; /* 컨테이너 내부 여백 최소화 */
+    padding: 1vh;
     box-sizing: border-box;
     box-shadow: none;
 }
@@ -55,16 +55,16 @@ body {
     padding: 1vh;
     box-sizing: border-box;
     border: 1px solid #ddd;
-    margin: 1vh; /* 표 사이의 간격 최소화 */
+    margin: 1vh;
     border-radius: 8px;
 }
 
 #am-box {
-    background-color: #e9e9e9; /* 옅은 회색 배경색 적용 */
+    background-color: #e9e9e9;
 }
 
 #pm-box {
-    background-color: #fff; /* 흰색 배경색 적용 */
+    background-color: #fff;
 }
 
 .schedule-box h2 {
@@ -117,9 +117,10 @@ th {
     font-weight: bold;
 }
 
-.general-surgery { background-color: #98FB98; } /* 더 진한 밝은 초록 */
-.internal-medicine { background-color: #F0E68C; } /* 더 진한 밝은 노란색 */
-.thyroid-breast { background-color: #FFB347; } /* 더 진한 오렌지색 계열 */
-.neurosurgery { background-color: #ADD8E6; } /* 더 진한 밝은 파란색 */
-.orthopedics { background-color: #BA55D3; } /* 더 진한 자주색 */
-.obgyn { background-color: #FF69B4; } /* 더 진한 핫핑크색 */
+/* 중간 톤으로 조정된 배경색 */
+.general-surgery { background-color: #C8E6C8; } /* 옅은 초록 -> 차분한 연두 */
+.internal-medicine { background-color: #FFF2BB; } /* 옅은 노랑 -> 차분한 노랑 */
+.thyroid-breast { background-color: #FFCBA4; } /* 옅은 살색 -> 차분한 주황 */
+.neurosurgery { background-color: #C0FFFF; } /* 옅은 하늘색 -> 차분한 하늘색 */
+.orthopedics { background-color: #E0C0E0; } /* 옅은 보라 -> 차분한 연보라 */
+.obgyn { background-color: #FFB6C1; } /* 옅은 분홍 -> 차분한 분홍 */
