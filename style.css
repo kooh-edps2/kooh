@@ -8,12 +8,12 @@
 
 body {
     font-family: 'S-CoreDream', 'Malgun Gothic', '맑은 고딕', sans-serif;
-    font-size: clamp(12px, 1.5vw, 20px); 
+    font-size: 2.5vh; /* 폰트 크기를 화면 높이에 비례하게 설정 */
     display: flex;
     flex-direction: column; 
     align-items: center; 
     margin: 0;
-    padding: 0;
+    padding: 1vh; /* body 여백을 최소화 */
     box-sizing: border-box;
     background-color: #f0f8ff; 
     background-image: repeating-linear-gradient(
@@ -22,7 +22,7 @@ body {
         #f0f8ff 10px,
         #e6f7ff 10px,
         #e6f7ff 20px
-    ); /* CSS로 만든 줄무늬 패턴 */
+    );
     height: 100vh;
     overflow: hidden; 
 }
@@ -30,8 +30,8 @@ body {
 .main-title {
     text-align: center;
     color: #1a5678;
-    margin: 2vh 0; 
-    font-size: clamp(20px, 3vw, 40px); 
+    margin: 1vh 0; /* 제목 위아래 여백을 최소화 */
+    font-size: 4vh; /* 제목 폰트 크기 조정 */
     font-weight: bold;
     letter-spacing: 2px;
 }
@@ -39,11 +39,11 @@ body {
 .schedule-container {
     display: flex;
     flex: 1; 
-    width: 100%;
-    height: calc(100vh - 80px);
-    background-color: rgba(255, 255, 255, 0.85); /* 컨테이너 배경에 약간의 투명도 추가 */
-    border-radius: 0;
-    padding: 0;
+    width: 98%; /* 너비를 98%로 늘림 */
+    height: 100%; /* 남은 높이를 모두 사용 */
+    background-color: rgba(255, 255, 255, 0.85); 
+    border-radius: 10px;
+    padding: 1vh; /* 컨테이너 내부 여백 최소화 */
     box-sizing: border-box;
     box-shadow: none;
 }
@@ -52,10 +52,10 @@ body {
     flex: 1;
     display: flex;
     flex-direction: column;
-    padding: 1vw;
+    padding: 1vh;
     box-sizing: border-box;
     border: 1px solid #ddd;
-    margin: 1vw;
+    margin: 1vh; /* 표 사이의 간격 최소화 */
     border-radius: 8px;
     background-color: #fff;
 }
@@ -64,7 +64,7 @@ body {
     text-align: center;
     color: #444;
     margin-top: 0;
-    margin-bottom: 1.5vh;
+    margin-bottom: 1vh;
     font-size: 1.5em;
     font-weight: bold;
 }
