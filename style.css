@@ -8,7 +8,7 @@
 
 body {
     font-family: 'S-CoreDream', 'Malgun Gothic', '맑은 고딕', sans-serif;
-    font-size: 1.5vw; 
+    font-size: clamp(12px, 1.5vw, 20px); /* 최소, 가변, 최대 폰트 크기 설정 */
     display: flex;
     flex-direction: column; 
     align-items: center; 
@@ -17,14 +17,14 @@ body {
     box-sizing: border-box;
     background-color: #f0f8ff; 
     height: 100vh;
-    overflow: hidden; /* **스크롤바를 완전히 숨김** */
+    overflow: hidden; /* 스크롤바를 완전히 숨김 */
 }
 
 .main-title {
     text-align: center;
     color: #1a5678;
     margin: 0 0 20px 0;
-    font-size: 2.5em;
+    font-size: clamp(20px, 3vw, 40px); /* 제목 폰트 크기 조절 */
     font-weight: bold;
     letter-spacing: 2px;
 }
@@ -68,16 +68,16 @@ table {
     border-collapse: collapse;
     margin-top: 10px;
     font-size: 1em;
-    table-layout: fixed; /* **표의 너비를 고정** */
+    table-layout: fixed;
 }
 
 th, td {
     border: 1px solid #ddd;
     padding: 10px;
     text-align: center;
-    overflow: hidden; /* **내용이 넘칠 경우 숨김** */
-    white-space: nowrap; /* **줄바꿈 방지** */
-    text-overflow: ellipsis; /* **넘치는 텍스트를 ...으로 표시** */
+    overflow: hidden; 
+    white-space: nowrap; 
+    text-overflow: ellipsis; 
 }
 
 th {
