@@ -35,6 +35,8 @@
         </div>
     </div>
 
+    <p class="version-info">v.20250811-001</p>
+
     <script>
         const sheetId = '1m0kCyq3QI9e203Rkhh0_gTFD6Jdafn89p3-AbddZ2OU';
         const dayNames = ['일', '월', '화', '수', '목', '금', '토'];
@@ -122,7 +124,6 @@
                             statusClass = 'open';
                         }
 
-                        // 'O' 값일 경우 셀 내용을 공백으로 처리
                         const cellContent = status === 'O' ? '' : status;
 
                         const tr = document.createElement('tr');
