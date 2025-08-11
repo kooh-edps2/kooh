@@ -1,9 +1,9 @@
 @font-face {
-     font-family: 'S-CoreDream';
-     src: url('https://fastly.jsdelivr.net/gh/projectnoonnu/noonfonts_six@1.2/S-CoreDream-5Medium.woff') format('woff');
-     font-weight: normal;
-     font-style: normal;
-     font-display: swap;
+    font-family: 'S-CoreDream';
+    src: url('https://fastly.jsdelivr.net/gh/projectnoonnu/noonfonts_six@1.2/S-CoreDream-5Medium.woff') format('woff');
+    font-weight: normal;
+    font-style: normal;
+    font-display: swap;
 }
 
 body {
@@ -112,10 +112,14 @@ th {
     color: #008000;
     font-weight: bold;
 }
+.open {
+    color: #4682B4; /* SteelBlue */
+    font-weight: bold;
+}
 
-.general-surgery { background-color: #e6ffe6; }
-.internal-medicine { background-color: #fffacd; }
-.thyroid-breast { background-color: #ffdab9; }
-.neurosurgery { background-color: #e0ffff; }
-.orthopedics { background-color: #d8bfd8; }
-.obgyn { background-color: #ffc0cb; }
+.general-surgery { background-color: #98FB98; } /* 더 진한 밝은 초록 */
+.internal-medicine { background-color: #F0E68C; } /* 더 진한 밝은 노란색 */
+.thyroid-breast { background-color: #FFB347; } /* 더 진한 오렌지색 계열 */
+.neurosurgery { background-color: #ADD8E6; } /* 더 진한 밝은 파란색 */
+.orthopedics { background-color: #BA55D3; } /* 더 진한 자주색 */
+.obgyn { background-color: #FF69B4; } /* 더 진한 핫핑크색 */
