@@ -109,7 +109,7 @@ th {
     font-weight: bold;
 }
 .finished {
-    color: #cc0000; /* 이 부분이 '마감' 상태를 붉은색으로 변경한 코드입니다. */
+    color: #cc0000;
     font-weight: bold;
 }
 .open {
@@ -123,3 +123,12 @@ th {
 .neurosurgery { background-color: #C0FFFF; }
 .orthopedics { background-color: #E0C0E0; }
 .obgyn { background-color: #FFB6C1; }
+
+.version-info {
+    position: fixed;
+    right: 5px;
+    bottom: 5px;
+    font-size: 0.8em;
+    color: #888;
+    user-select: none;
+}
