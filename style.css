@@ -64,7 +64,7 @@ body {
 }
 
 #pm-box {
-    background-color: #fff;
+    background-color: #f8f8f8; /* 배경색을 아주 옅은 회색으로 변경 */
 }
 
 .schedule-box h2 {
@@ -85,7 +85,7 @@ table {
 }
 
 th, td {
-    border: 1px solid #ddd;
+    border: 1px solid #fff;
     padding: 1vh;
     text-align: center;
     overflow: hidden;
@@ -121,7 +121,7 @@ th {
 .internal-medicine { background-color: #FFF2BB; }
 .thyroid-breast { background-color: #FFCBA4; }
 .neurosurgery { background-color: #C0FFFF; }
-.orthopedics { background-color: #E0C0E0; }
+.orthopedics { background-color: #D2B48C; }
 .obgyn { background-color: #FFB6C1; }
 
 .version-info {
@@ -132,5 +132,3 @@ th {
     color: #888;
     user-select: none;
 }
-
-
