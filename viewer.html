@@ -41,12 +41,24 @@
         dayjs.extend(dayjs_plugin_weekday);
         dayjs.extend(dayjs_plugin_isBetween);
 
-        const sheetUrl = "https://docs.google.com/spreadsheets/d/e/2PACX-1vT_Qf58i_Q_h7tDk8t5m-jY2o61T1g7X_F2_o7q4J7u_j7j5u/pub?gid=0&single=true&output=csv";
+        const sheetId = '1m0kCyq3QI9e203Rkhh0_gTFD6Jdafn89p3-AbddZ2OU';
+        const dayNames = ['일', '월', '화', '수', '목', '금', '토'];
+
+        const gidMap = {
+            '일': '1340551526',
+            '월': '166831320',
+            '화': '1050890560',
+            '수': '675567842',
+            '목': '1074220298',
+            '금': '1055010041',
+            '토': '944320917',
+        };
 
         const now = dayjs();
-        const weekday = now.weekday(); 
-        const weekdays = ['일', '월', '화', '수', '목', '금', '토'];
-        const todayName = weekdays[weekday];
+        const todayName = dayNames[now.weekday()];
+        const todayGid = gidMap[todayName];
+        
+        const sheetUrl = `https://docs.google.com/spreadsheets/d/${sheetId}/e/2PACX-1vT_Qf58i_Q_h7tDk8t5m-jY2o61T1g7X_F2_o7q4J7u_j7j5u/pub?gid=${todayGid}&single=true&output=csv`;
 
         function getSheetData() {
             fetch(sheetUrl)
@@ -60,15 +72,12 @@
 
                     rows.forEach(row => {
                         const columns = row.split(',');
-                        if (columns.length < 5) return;
+                        if (columns.length < 4) return;
 
-                        const day = columns[0].trim();
-                        if (day !== todayName) return;
-
-                        const department = columns[1].trim();
-                        const doctor = columns[2].trim();
-                        const note = columns[3].trim();
-                        const schedule = columns[4].trim();
+                        const department = columns[0].trim();
+                        const doctor = columns[1].trim();
+                        const note = columns[2].trim();
+                        const schedule = columns[3].trim();
 
                         const tr = document.createElement('tr');
                         const departmentCell = document.createElement('td');
@@ -117,11 +126,6 @@
         }
         
         getSheetData();
-
-        // 30초마다 페이지를 새로고침하는 코드
-        setInterval(function() {
-            location.reload();
-        }, 30000);
     </script>
 </body>
 </html>
