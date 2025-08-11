@@ -109,18 +109,17 @@ th {
     font-weight: bold;
 }
 .finished {
-    color: #008000;
+    color: #cc0000; /* 이 부분이 '마감' 상태를 붉은색으로 변경한 코드입니다. */
     font-weight: bold;
 }
 .open {
-    color: #4682B4; /* SteelBlue */
+    color: #4682B4;
     font-weight: bold;
 }
 
-/* 중간 톤으로 조정된 배경색 */
-.general-surgery { background-color: #C8E6C8; } /* 옅은 초록 -> 차분한 연두 */
-.internal-medicine { background-color: #FFF2BB; } /* 옅은 노랑 -> 차분한 노랑 */
-.thyroid-breast { background-color: #FFCBA4; } /* 옅은 살색 -> 차분한 주황 */
-.neurosurgery { background-color: #C0FFFF; } /* 옅은 하늘색 -> 차분한 하늘색 */
-.orthopedics { background-color: #E0C0E0; } /* 옅은 보라 -> 차분한 연보라 */
-.obgyn { background-color: #FFB6C1; } /* 옅은 분홍 -> 차분한 분홍 */
+.general-surgery { background-color: #C8E6C8; }
+.internal-medicine { background-color: #FFF2BB; }
+.thyroid-breast { background-color: #FFCBA4; }
+.neurosurgery { background-color: #C0FFFF; }
+.orthopedics { background-color: #E0C0E0; }
+.obgyn { background-color: #FFB6C1; }
