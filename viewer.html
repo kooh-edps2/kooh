@@ -3,14 +3,11 @@
 <head>
     <title>진료시간 안내</title>
     <link rel="stylesheet" href="style.css">
-    <script src="https://cdn.jsdelivr.net/npm/dayjs@1.10.4/dayjs.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/dayjs@1.10.4/plugin/weekday.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/dayjs@1.10.4/plugin/isBetween.js"></script>
 </head>
 <body>
     <h1 class="main-title">구병원 진료 스케줄</h1>
     <div class="schedule-container">
-        <div class="schedule-box" id="am-schedule">
+        <div class="schedule-box" id="am-box">
             <h2>오전 진료</h2>
             <table>
                 <thead>
@@ -20,10 +17,10 @@
                         <th>비고</th>
                     </tr>
                 </thead>
-                <tbody></tbody>
+                <tbody id="am-schedule"></tbody>
             </table>
         </div>
-        <div class="schedule-box" id="am-schedule">
+        <div class="schedule-box" id="pm-box">
             <h2>오후 진료</h2>
             <table>
                 <thead>
@@ -33,12 +30,13 @@
                         <th>비고</th>
                     </tr>
                 </thead>
-                <tbody></tbody>
+                <tbody id="pm-schedule"></tbody>
             </table>
         </div>
     </div>
- <script>
-        const sheetId = '1m0kCyq3QI9e203Rkhh0_gTFD6Jdafn89p3-AbddZ2OU'; 
+
+    <script>
+        const sheetId = '1m0kCyq3QI9e203Rkhh0_gTFD6Jdafn89p3-AbddZ2OU';
         const dayNames = ['일', '월', '화', '수', '목', '금', '토'];
 
         const gidMap = {
@@ -69,8 +67,8 @@
                     const json = JSON.parse(text.substr(47).slice(0, -2));
                     const rows = json.table.rows;
                     
-                    const amTableBody = document.querySelector('#am-schedule tbody');
-                    const pmTableBody = document.querySelector('#pm-schedule tbody');
+                    const amTableBody = document.querySelector('#am-schedule');
+                    const pmTableBody = document.querySelector('#pm-schedule');
                     amTableBody.innerHTML = '';
                     pmTableBody.innerHTML = '';
 
@@ -130,5 +128,3 @@
     </script>
 </body>
 </html>
-
-
