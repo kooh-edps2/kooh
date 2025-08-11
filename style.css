@@ -3,19 +3,19 @@
      src: url('https://fastly.jsdelivr.net/gh/projectnoonnu/noonfonts_six@1.2/S-CoreDream-5Medium.woff') format('woff');
      font-weight: normal;
      font-style: normal;
-     font-display: swap; 
+     font-display: swap;
 }
 
 body {
     font-family: 'S-CoreDream', 'Malgun Gothic', '맑은 고딕', sans-serif;
     font-size: 2.5vh; /* 폰트 크기를 화면 높이에 비례하게 설정 */
     display: flex;
-    flex-direction: column; 
-    align-items: center; 
+    flex-direction: column;
+    align-items: center;
     margin: 0;
     padding: 1vh; /* body 여백을 최소화 */
     box-sizing: border-box;
-    background-color: #f0f8ff; 
+    background-color: #f0f8ff;
     background-image: repeating-linear-gradient(
         45deg,
         #f0f8ff,
@@ -24,7 +24,7 @@ body {
         #e6f7ff 20px
     );
     height: 100vh;
-    overflow: hidden; 
+    overflow: hidden;
 }
 
 .main-title {
@@ -38,10 +38,10 @@ body {
 
 .schedule-container {
     display: flex;
-    flex: 1; 
+    flex: 1;
     width: 98%; /* 너비를 98%로 늘림 */
     height: 100%; /* 남은 높이를 모두 사용 */
-    background-color: rgba(255, 255, 255, 0.85); 
+    background-color: rgba(255, 255, 255, 0.85);
     border-radius: 10px;
     padding: 1vh; /* 컨테이너 내부 여백 최소화 */
     box-sizing: border-box;
@@ -88,9 +88,9 @@ th, td {
     border: 1px solid #ddd;
     padding: 1vh;
     text-align: center;
-    overflow: hidden; 
-    white-space: nowrap; 
-    text-overflow: ellipsis; 
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
 }
 
 th {
@@ -105,4 +105,17 @@ th {
     font-weight: bold;
 }
 .surgery {
-    color: #cc000
+    color: #cc0000;
+    font-weight: bold;
+}
+.finished {
+    color: #008000;
+    font-weight: bold;
+}
+
+.general-surgery { background-color: #e6ffe6; }
+.internal-medicine { background-color: #fffacd; }
+.thyroid-breast { background-color: #ffdab9; }
+.neurosurgery { background-color: #e0ffff; }
+.orthopedics { background-color: #d8bfd8; }
+.obgyn { background-color: #ffc0cb; }
