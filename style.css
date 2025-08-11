@@ -8,7 +8,7 @@
 
 body {
     font-family: 'S-CoreDream', 'Malgun Gothic', '맑은 고딕', sans-serif;
-    font-size: 2.7vh; /* 전체 폰트 크기를 더 크게 조정 */
+    font-size: 2.5vh; /* 폰트 크기를 화면 높이에 비례하게 설정 */
     display: flex;
     flex-direction: column; 
     align-items: center; 
@@ -31,7 +31,7 @@ body {
     text-align: center;
     color: #1a5678;
     margin: 1vh 0; /* 제목 위아래 여백을 최소화 */
-    font-size: 4.5vh; /* 제목 폰트 크기 조정 */
+    font-size: 4vh; /* 제목 폰트 크기 조정 */
     font-weight: bold;
     letter-spacing: 2px;
 }
@@ -57,14 +57,7 @@ body {
     border: 1px solid #ddd;
     margin: 1vh; /* 표 사이의 간격 최소화 */
     border-radius: 8px;
-}
-
-#am-box {
-    background-color: #e9e9e9; /* 옅은 회색 배경색 적용 */
-}
-
-#pm-box {
-    background-color: #fff; /* 흰색 배경색 적용 */
+    background-color: #fff;
 }
 
 .schedule-box h2 {
@@ -86,7 +79,7 @@ table {
 
 th, td {
     border: 1px solid #ddd;
-    padding: 2vh;
+    padding: 1vh;
     text-align: center;
     overflow: hidden; 
     white-space: nowrap; 
