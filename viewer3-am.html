@@ -390,7 +390,7 @@
                     }
 
                     // 오후 12시 30분을 기준으로 오전/오후 레이아웃 전환
-                    const isAmLayoutTime = (hour < 12) || (hour === 23 && minute < 30);
+                    const isAmLayoutTime = (hour < 23) || (hour === 23 && minute < 30);
                     
                     if (isAmLayoutTime) {
                         amBox.style.display = 'flex';
