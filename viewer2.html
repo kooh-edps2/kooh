@@ -96,7 +96,7 @@
             width: 100%;
             border-collapse: collapse;
             margin-top: 1vh;
-            font-size: 1.3em;
+            font-size: 1.1em; /* 표 글자 크기 감소 */
             table-layout: fixed;
             height: auto;
         }
@@ -106,9 +106,9 @@
             background-color: #2c3e50;
             color: #ffffff;
             font-weight: bold;
-            font-size: 1.1em; /* 표 제목 폰트 크기 원래대로 */
+            font-size: 1.1em;
             border: 1px solid #ffffff;
-            padding: 1.2vh; /* 표 제목 여백 원래대로 */
+            padding: 1.2vh;
             text-align: center;
             white-space: normal;
             word-break: break-word;
@@ -118,8 +118,8 @@
         
         /* 컬럼 너비 재조정 */
         th:nth-child(1), td:nth-child(1) { width: 35%; }
-        th:nth-child(2), td:nth-child(2) { width: 45%; }
-        th:nth-child(3), td:nth-child(3) { width: 20%; }
+        th:nth-child(2), td:nth-child(2) { width: 40%; } /* 진료의사 너비 감소 */
+        th:nth-child(3), td:nth-child(3) { width: 25%; } /* 비고란 너비 증가 */
 
         td {
             border: 1px solid #ffffff;
@@ -130,6 +130,13 @@
             vertical-align: top;
             height: auto;
             line-height: 1.2;
+        }
+
+        /* 비고 란 글자 스타일 수정 */
+        td:nth-child(3) {
+            white-space: normal; /* 글자 줄바꿈 허용 */
+            overflow: visible; /* 영역 밖으로 벗어나는 내용 숨기지 않기 */
+            text-overflow: clip; /* 말줄임표 표시하지 않기 */
         }
 
         .closed {
@@ -170,7 +177,7 @@
 <body>
     <h1 class="main-title">구병원 진료 스케줄</h1>
     <div class="schedule-container">
-        <!-- 오전 진료 스케줄 (13시 이전) -->
+        <!-- 오전 진료 스케줄 (12시 30분 이전) -->
         <div class="schedule-box" id="am-box">
             <h2 style="text-align: center;">오전 진료</h2>
             <div class="schedule-table-group">
@@ -201,7 +208,7 @@
             </div>
         </div>
 
-        <!-- 오후 진료 스케줄 (13시 이후) -->
+        <!-- 오후 진료 스케줄 (12시 30분 이후) -->
         <div class="schedule-box" id="pm-box">
             <h2 style="text-align: center;">오후 진료</h2>
             <div class="schedule-table-group">
@@ -233,7 +240,7 @@
         </div>
     </div>
 
-    <p class="version-info">v.20250811-020</p>
+    <p class="version-info">v.20250811-024</p>
 
     <script>
         const sheetId = '1m0kCyq3QI9e203Rkhh0_gTFD6Jdafn89p3-AbddZ2OU';
@@ -256,6 +263,7 @@
             const day = today.getDate();
             const dayOfWeek = dayNames[today.getDay()];
             const hour = today.getHours();
+            const minute = today.getMinutes();
 
             // 상단 제목 날짜 업데이트
             const mainTitle = document.querySelector('.main-title');
@@ -267,7 +275,8 @@
             let currentScheduleBox;
             let targetTables = {};
 
-            if (hour < 13) {
+            // 진료 스케줄 표시 기준 시간을 12시 30분으로 변경
+            if (hour < 12 || (hour === 12 && minute < 30)) {
                 amBox.style.display = 'flex';
                 pmBox.style.display = 'none';
                 currentScheduleBox = amBox;
@@ -332,8 +341,9 @@
                             department = department.split(':')[1].trim();
                         }
 
-                        // 현재 시간대(오전/오후)와 일치하는 데이터만 처리
-                        if ((hour < 13 && ampm === '오전') || (hour >= 13 && ampm === '오후')) {
+                        // 현재 시간대(12시 30분 기준)와 일치하는 데이터만 처리
+                        const isAm = hour < 12 || (hour === 12 && minute < 30);
+                        if ((isAm && ampm === '오전') || (!isAm && ampm === '오후')) {
                             let departmentClass = 'other';
                             let targetTableBody = targetTables['기타'];
 
