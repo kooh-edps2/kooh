@@ -11,6 +11,13 @@
             font-display: swap;
         }
 
+        @font-face {
+            font-family: 'GmarketSansMedium';
+            src: url('https://fastly.jsdelivr.net/gh/projectnoonnu/noonfonts_2001@1.1/GmarketSansMedium.woff') format('woff');
+            font-weight: normal;
+            font-style: normal;
+        }
+
         body {
             font-family: 'S-CoreDream', 'Malgun Gothic', '맑은 고딕', sans-serif;
             font-size: 2.5vh;
@@ -33,6 +40,7 @@
         }
 
         .main-title {
+            font-family: 'GmarketSansMedium', sans-serif; /* 폰트 적용 */
             text-align: center;
             color: #1a5678;
             margin: 1vh 0;
@@ -78,6 +86,7 @@
         }
 
         .schedule-box h2 {
+            font-family: 'GmarketSansMedium', sans-serif; /* 폰트 적용 */
             text-align: center;
             color: #444;
             margin-top: 0;
@@ -104,10 +113,11 @@
         }
 
         th {
-            background-color: #f0f8ff;
+            font-family: 'GmarketSansMedium', sans-serif; /* 폰트 적용 */
+            background-color: #444; /* 검은 회색으로 변경 */
+            color: #ffff00; /* 노란색 글자로 변경 */
             font-weight: bold;
             font-size: 1.1em;
-            color: #444;
         }
 
         .closed {
