@@ -196,8 +196,9 @@
             const year = today.getFullYear();
             const month = today.getMonth() + 1;
             const day = today.getDate();
+            const dayOfWeek = dayNames[today.getDay()];
             const mainTitle = document.querySelector('.main-title');
-            mainTitle.innerHTML = `구병원 진료 스케줄 <span class="current-date">(${year}년 ${month}월 ${day}일)</span>`;
+            mainTitle.innerHTML = `구병원 진료 스케줄 <span class="current-date">(${year}년 ${month}월 ${day}일 ${dayOfWeek}요일)</span>`;
 
             const currentDayName = dayNames[today.getDay()];
             const currentGid = gidMap[currentDayName];
