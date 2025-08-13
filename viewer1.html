@@ -14,7 +14,6 @@
 
         @font-face {
             font-family: 'GmarketSansMedium';
-            /* 폰트 로딩 오류를 해결하기 위해 더 안정적인 CDN URL로 수정했습니다. */
             src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_2001@1.1/GmarketSansMedium.woff2') format('woff2'),
                  url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_2001@1.1/GmarketSansMedium.woff') format('woff');
             font-weight: normal;
@@ -28,20 +27,22 @@
             flex-direction: column;
             align-items: center;
             margin: 0;
-            padding: 1vh;
+            padding: 0.5vh;
             box-sizing: border-box;
             background-color: #dee2e6;
             height: 100vh;
             overflow: auto;
         }
 
-        /* 제목을 감싸는 박스 스타일을 아래쪽 schedule-container와 완벽하게 동일하게 변경 */
         .title-box {
-            background-color: #ffffff; /* 흰색 배경으로 변경 */
+            background-color: #ffffff;
             border: 1px solid #e0e0e0;
             border-radius: 10px;
-            margin: 1.5vh;
-            padding: 1vh; /* schedule-container와 동일하게 1vh로 조정 */
+            margin-top: 0.5vh;
+            margin-left: 0.5vh;
+            margin-right: 0.5vh;
+            margin-bottom: 2vh;
+            padding: 1vh; /* 타이틀 박스의 패딩을 늘려 높이를 약간 키웠습니다. */
             box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
             width: 98%;
             box-sizing: border-box;
@@ -53,7 +54,7 @@
             text-align: center;
             color: #2c3e50;
             margin: 0;
-            font-size: 5vh;
+            font-size: 5vh; /* 폰트 크기를 약간 키워 높이를 늘렸습니다. */
             font-weight: bold;
             letter-spacing: 2px;
         }
@@ -72,7 +73,7 @@
             width: 98%;
             background-color: #ffffff;
             border-radius: 10px;
-            padding: 1vh;
+            padding: 0.5vh;
             box-sizing: border-box;
             box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
             overflow: auto;
@@ -83,19 +84,17 @@
             flex-direction: column;
             border: 1px solid #e0e0e0;
             border-radius: 8px;
-            margin: 1vh;
+            margin: 0.5vh;
             padding: 1vh;
             flex: 1 1 45%;
             min-width: 300px;
         }
 
-        /* 오전 진료 박스 스타일 */
         .time-slot-box.am {
             background-color: #F0F8FF;
             box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
         }
 
-        /* 오후 진료 박스 스타일 */
         .time-slot-box.pm {
             background-color: #fcf3f3;
             box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
@@ -160,7 +159,6 @@
             font-weight: bold;
         }
 
-        /* 각 진료과 배경색을 패턴으로 변경 */
         .general-surgery {
             background-color: #C8E6C8;
             background-image: repeating-linear-gradient(45deg, #D9F2D9 0px, #D9F2D9 2px, #C8E6C8 2px, #C8E6C8 4px);
@@ -233,7 +231,7 @@
         </div>
     </div>
 
-    <p class="version-info">v.20250813-005</p>
+    <p class="version-info">v.20250813-007</p>
 
     <script>
         const sheetId = '1m0kCyq3QI9e203Rkhh0_gTFD6Jdafn89p3-AbddZ2OU';
@@ -287,7 +285,6 @@
                         return;
                     }
 
-                    // 테이블 바디 초기화
                     const amScheduleBody = document.querySelector('#am-schedule-body');
                     const pmScheduleBody = document.querySelector('#pm-schedule-body');
                     amScheduleBody.innerHTML = '';
