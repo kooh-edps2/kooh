@@ -1,0 +1,412 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>진료시간 안내</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        @font-face {
+            font-family: 'S-CoreDream';
+            src: url('https://fastly.jsdelivr.net/gh/projectnoonnu/noonfonts_six@1.2/S-CoreDream-5Medium.woff') format('woff');
+            font-weight: normal;
+            font-style: normal;
+            font-display: swap;
+        }
+
+        @font-face {
+            font-family: 'GmarketSansMedium';
+            src: url('https://fastly.jsdelivr.gh/projectnoonnu/noonfonts_2001@1.1/GmarketSansMedium.woff') format('woff');
+            font-weight: normal;
+            font-style: normal;
+        }
+
+        body {
+            font-family: 'S-CoreDream', 'Malgun Gothic', '맑은 고딕', sans-serif;
+            font-size: 2.5vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin: 0;
+            padding: 1vh;
+            box-sizing: border-box;
+            background-color: #dee2e6; /* 더 짙은 청회색으로 배경색 변경 */
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        /* 제목을 감싸는 박스 스타일 수정: 그라데이션, 호버 효과 제거 및 패턴 추가 */
+        .title-box {
+            background-color: #f7f7f7;
+            background-image: repeating-linear-gradient(90deg, #e9e9e9 0px, #e9e9e9 2px, #f7f7f7 2px, #f7f7f7 4px);
+            border: 1px solid #dcdcdc;
+            border-radius: 8px;
+            margin: 1vh;
+            padding: 1vh;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05); /* 그림자 효과를 다른 박스와 통일 */
+            width: 98%;
+            box-sizing: border-box;
+            text-align: center;
+        }
+
+        .main-title {
+            font-family: 'GmarketSansMedium', sans-serif;
+            text-align: center;
+            color: #2c3e50;
+            margin: 0;
+            font-size: 4vh;
+            font-weight: bold;
+            letter-spacing: 2px;
+        }
+
+        .main-title .current-date {
+            font-size: 0.7em;
+            font-weight: normal;
+        }
+
+        .schedule-container {
+            display: flex;
+            flex-direction: column;
+            flex: 1;
+            width: 98%;
+            background-color: #ffffff;
+            border-radius: 10px;
+            padding: 1vh;
+            box-sizing: border-box;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            overflow: auto;
+        }
+
+        .time-slot-box {
+            display: flex;
+            flex-direction: column;
+            border: 1px solid #e0e0e0;
+            border-radius: 8px;
+            margin: 1vh;
+            padding: 1vh;
+        }
+
+        /* 오전 진료 박스 스타일 (패턴 추가) */
+        .time-slot-box.am {
+            background-color: #F0F8FF;
+            background-image: repeating-linear-gradient(90deg, #E6F0FF 0px, #E6F0FF 2px, #F0F8FF 2px, #F0F8FF 4px);
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+        }
+
+        /* 오후 진료 박스 스타일 - 더 옅은 붉은색 계열의 스프라이트로 변경 */
+        .time-slot-box.pm {
+            background-color: #fcf3f3;
+            background-image: repeating-linear-gradient(90deg, #fbe8e9 0px, #fbe8e9 2px, #fcf3f3 2px, #fcf3f3 4px);
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+        }
+
+        .schedule-section-title {
+            font-family: 'GmarketSansMedium', sans-serif;
+            text-align: center;
+            color: #2c3e50;
+            margin: 0 0 1vh 0;
+            font-size: 3vh;
+            font-weight: bold;
+        }
+
+        .department-tables {
+            display: flex;
+            justify-content: space-around;
+            width: 100%;
+        }
+
+        .department-table-wrapper {
+            flex: 1;
+            margin: 0 0.5vh;
+            box-sizing: border-box;
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 1em;
+            table-layout: fixed;
+        }
+
+        th, td {
+            border: 1px solid #ffffff;
+            padding: 1vh;
+            text-align: center;
+            white-space: normal;
+        }
+
+        th {
+            font-family: 'GmarketSansMedium', sans-serif;
+            background-color: #2c3e50;
+            color: #ffffff;
+            font-weight: bold;
+            font-size: 1.1em;
+        }
+
+        .closed {
+            color: #0000cc;
+            font-weight: bold;
+        }
+        .surgery {
+            color: #cc0000;
+            font-weight: bold;
+        }
+        .finished {
+            color: #cc0000;
+            font-weight: bold;
+        }
+        .open {
+            color: #4682B4;
+            font-weight: bold;
+        }
+
+        .general-surgery { background-color: #C8E6C8; }
+        .internal-medicine { background-color: #FFF2BB; }
+        .thyroid-breast { background-color: #FFCBA4; }
+        .neurosurgery { background-color: #C0FFFF; }
+        .orthopedics { background-color: #D2B48C; }
+        .obgyn { background-color: #FFB6C1; }
+
+        .version-info {
+            position: fixed;
+            right: 5px;
+            bottom: 5px;
+            font-size: 0.3em;
+            color: #888;
+            user-select: none;
+        }
+    </style>
+</head>
+<body>
+    <!-- 제목을 감싸는 박스를 추가했습니다 -->
+    <div class="title-box">
+        <h1 class="main-title">구병원 진료 스케줄</h1>
+    </div>
+    
+    <div class="schedule-container">
+        <!-- 오전 진료 -->
+        <div class="time-slot-box am">
+            <h2 class="schedule-section-title">오전 진료</h2>
+            <div class="department-tables">
+                <div class="department-table-wrapper">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>진료과</th>
+                                <th>진료의사</th>
+                                <th>비고</th>
+                            </tr>
+                        </thead>
+                        <tbody id="am-surgery"></tbody>
+                    </table>
+                </div>
+                <div class="department-table-wrapper">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>진료과</th>
+                                <th>진료의사</th>
+                                <th>비고</th>
+                            </tr>
+                        </thead>
+                        <tbody id="am-internal"></tbody>
+                    </table>
+                </div>
+                <div class="department-table-wrapper">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>진료과</th>
+                                <th>진료의사</th>
+                                <th>비고</th>
+                            </tr>
+                        </thead>
+                        <tbody id="am-others"></tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- 오후 진료 -->
+        <div class="time-slot-box pm">
+            <h2 class="schedule-section-title">오후 진료</h2>
+            <div class="department-tables">
+                <div class="department-table-wrapper">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>진료과</th>
+                                <th>진료의사</th>
+                                <th>비고</th>
+                            </tr>
+                        </thead>
+                        <tbody id="pm-surgery"></tbody>
+                    </table>
+                </div>
+                <div class="department-table-wrapper">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>진료과</th>
+                                <th>진료의사</th>
+                                <th>비고</th>
+                            </tr>
+                        </thead>
+                        <tbody id="pm-internal"></tbody>
+                    </table>
+                </div>
+                <div class="department-table-wrapper">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>진료과</th>
+                                <th>진료의사</th>
+                                <th>비고</th>
+                            </tr>
+                        </thead>
+                        <tbody id="pm-others"></tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <p class="version-info">v.20250812-008</p>
+
+    <script>
+        const sheetId = '1m0kCyq3QI9e203Rkhh0_gTFD6Jdafn89p3-AbddZ2OU';
+        const dayNames = ['일', '월', '화', '수', '목', '금', '토'];
+
+        const gidMap = {
+            '일': '1340551526',
+            '월': '166831320',
+            '화': '1050890560',
+            '수': '675567842',
+            '목': '1074220298',
+            '금': '1055010041',
+            '토': '944320917',
+        };
+
+        function fetchSchedule() {
+            const today = new Date();
+            const year = today.getFullYear();
+            const month = today.getMonth() + 1;
+            const day = today.getDate();
+            const dayOfWeek = dayNames[today.getDay()];
+            const mainTitle = document.querySelector('.main-title');
+            mainTitle.innerHTML = `구병원 진료 스케줄 <span class="current-date">(${year}년 ${month}월 ${day}일 ${dayOfWeek}요일)</span>`;
+
+            const currentDayName = dayNames[today.getDay()];
+            const currentGid = gidMap[currentDayName];
+            
+            if (!currentGid) {
+                console.error(`Error: Gid for ${currentDayName} not found.`);
+                return;
+            }
+
+            const apiUrl = `https://docs.google.com/spreadsheets/d/${sheetId}/gviz/tq?gid=${currentGid}&tqx=out:json`;
+            
+            fetch(apiUrl)
+                .then(res => res.text())
+                .then(text => {
+                    const json = JSON.parse(text.substr(47).slice(0, -2));
+                    const table = json.table;
+                    const rows = table.rows;
+
+                    const headers = rows[0].c.map(header => header.v);
+
+                    const ampmIndex = headers.indexOf('오전/오후');
+                    const departmentIndex = headers.indexOf('진료과');
+                    const doctorIndex = headers.indexOf('진료의사');
+                    const statusIndex = headers.indexOf('비고');
+
+                    if ([ampmIndex, departmentIndex, doctorIndex, statusIndex].includes(-1)) {
+                        console.error('Error: Required column headers not found.');
+                        return;
+                    }
+
+                    // 테이블 바디 초기화
+                    const amSurgeryTableBody = document.querySelector('#am-surgery');
+                    const amInternalTableBody = document.querySelector('#am-internal');
+                    const amOthersTableBody = document.querySelector('#am-others');
+                    const pmSurgeryTableBody = document.querySelector('#pm-surgery');
+                    const pmInternalTableBody = document.querySelector('#pm-internal');
+                    const pmOthersTableBody = document.querySelector('#pm-others');
+                    amSurgeryTableBody.innerHTML = '';
+                    amInternalTableBody.innerHTML = '';
+                    amOthersTableBody.innerHTML = '';
+                    pmSurgeryTableBody.innerHTML = '';
+                    pmInternalTableBody.innerHTML = '';
+                    pmOthersTableBody.innerHTML = '';
+
+                    for (let i = 1; i < rows.length; i++) {
+                        const row = rows[i];
+                        const ampm = row.c[ampmIndex] ? row.c[ampmIndex].v : '';
+                        let department = row.c[departmentIndex] ? row.c[departmentIndex].v : '';
+                        const doctor = row.c[doctorIndex] ? row.c[doctorIndex].v : '';
+                        const status = row.c[statusIndex] ? row.c[statusIndex].v : '';
+
+                        if (department.includes(':')) {
+                            department = department.split(':')[1].trim();
+                        }
+                        
+                        let departmentClass = '';
+                        if (department === '외과') {
+                            departmentClass = 'general-surgery';
+                        } else if (department === '내과') {
+                            departmentClass = 'internal-medicine';
+                        } else if (department === '갑상선유방센터') {
+                            departmentClass = 'thyroid-breast';
+                        } else if (department === '신경외과') {
+                            departmentClass = 'neurosurgery';
+                        } else if (department === '정형외과') {
+                            departmentClass = 'orthopedics';
+                        } else if (department === '산부인과') {
+                            departmentClass = 'obgyn';
+                        }
+
+                        let statusClass = '';
+                        if (status === '휴진') {
+                            statusClass = 'closed';
+                        } else if (status === '수술중') {
+                            statusClass = 'surgery';
+                        } else if (status === '마감') {
+                            statusClass = 'finished';
+                        } else if (status === 'O') {
+                            statusClass = 'open';
+                        }
+
+                        const cellContent = status === 'O' ? '' : status;
+
+                        const tr = document.createElement('tr');
+                        tr.className = departmentClass;
+                        tr.innerHTML = `
+                            <td>${department}</td>
+                            <td>${doctor}</td>
+                            <td class="${statusClass}">${cellContent}</td>
+                        `;
+                        
+                        if (ampm === '오전') {
+                            if (department === '외과') {
+                                amSurgeryTableBody.appendChild(tr);
+                            } else if (department === '내과') {
+                                amInternalTableBody.appendChild(tr);
+                            } else {
+                                amOthersTableBody.appendChild(tr);
+                            }
+                        } else if (ampm === '오후') {
+                            if (department === '외과') {
+                                pmSurgeryTableBody.appendChild(tr);
+                            } else if (department === '내과') {
+                                pmInternalTableBody.appendChild(tr);
+                            } else {
+                                pmOthersTableBody.appendChild(tr);
+                            }
+                        }
+                    }
+                });
+        }
+
+        setInterval(fetchSchedule, 30000);
+        fetchSchedule();
+    </script>
+</body>
+</html>
