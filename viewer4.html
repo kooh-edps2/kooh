@@ -14,7 +14,9 @@
 
         @font-face {
             font-family: 'GmarketSansMedium';
-            src: url('https://fastly.jsdelivr.gh/projectnoonnu/noonfonts_2001@1.1/GmarketSansMedium.woff') format('woff');
+            /* 폰트 로딩 오류를 해결하기 위해 더 안정적인 CDN URL로 수정했습니다. */
+            src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_2001@1.1/GmarketSansMedium.woff2') format('woff2'),
+                 url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_2001@1.1/GmarketSansMedium.woff') format('woff');
             font-weight: normal;
             font-style: normal;
         }
@@ -133,17 +135,16 @@
             white-space: normal;
         }
 
-        /* 첫 번째 열 (진료과)의 너비를 50%로 설정하여 더 넓게 만듭니다. */
+        /* 사용자 요청에 따라 열 너비를 조정 */
         th:nth-child(1), td:nth-child(1) {
-            width: 50%;
+            width: 46%; /* 진료과 너비 46%로 변경 */
         }
         
-        /* 두 번째 열 (진료의사)와 세 번째 열 (비고)의 너비를 각각 25%로 설정합니다. */
         th:nth-child(2), td:nth-child(2) {
-            width: 25%;
+            width: 27%; /* 진료의사 너비 27%로 변경 */
         }
         th:nth-child(3), td:nth-child(3) {
-            width: 25%;
+            width: 27%; /* 비고 너비 27%로 변경 */
         }
 
         th {
@@ -282,7 +283,7 @@
         </div>
     </div>
 
-    <p class="version-info">v.20250812-009</p>
+    <p class="version-info">v.20250812-014</p>
 
     <script>
         const sheetId = '1m0kCyq3QI9e203Rkhh0_gTFD6Jdafn89p3-AbddZ2OU';
