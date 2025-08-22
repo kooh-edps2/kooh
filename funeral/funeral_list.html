@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>분향실 전체</title>
+    <link rel="stylesheet" href="fune-style.css">
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            background-color: #f4f4f9;
+            color: #333;
+            margin: 0;
+            padding: 20px;
+        }
+        .container {
+            max-width: 800px;
+            margin: auto;
+            background: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+        h1 {
+            text-align: center;
+            color: #4a4a4a;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        th, td {
+            text-align: left;
+            padding: 12px;
+            border-bottom: 1px solid #ddd;
+        }
+        th {
+            background-color: #e9ecef;
+            color: #555;
+            font-weight: 600;
+        }
+        tr:hover {
+            background-color: #f1f1f1;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>장례식장 안내</h1>
+        <table id="funeral-list">
+            <thead>
+                <tr>
+                    <th>빈소</th>
+                    <th>고인명</th>
+                    <th>상주</th>
+                    <th>발인/장지</th>
+                </tr>
+            </thead>
+            <tbody>
+                </tbody>
+        </table>
+    </div>
+
+    <script>
+        // 이 URL은 구글 시트 웹 게시 후 얻게 되는 URL로 변경해야 합니다.
+        // 예를 들어: https://docs.google.com/spreadsheets/d/e/2PACX-1vT5.../pub?gid=0&single=true&output=csv
+      // 원무과 스케줄과 다르게 이건 간단한 작업이므로 구글시트파일을 웹에 csv스타일로 게시한걸 가져옵니다.
+        const sheetUrl = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vQGQjtDo4HG2faMAuGC7hJZ-IFEDp3lFu0pvGgE0MrhdpMkxwktUCEC0qZJUiEMffUEci6zi8J72Sz_/pubhtml';
+
+        function parseCsv(text) {
+            const lines = text.trim().split('\n').map(line => line.split(','));
+            const headers = lines[0].map(header => header.trim().replace(/"/g, ''));
+            const data = lines.slice(1).map(line => {
+                const row = {};
+                line.forEach((value, i) => {
+                    row[headers[i]] = value.trim().replace(/"/g, '');
+                });
+                return row;
+            });
+            return data;
+        }
+
+        fetch(sheetUrl)
+            .then(response => response.text())
+            .then(csvText => {
+                const data = parseCsv(csvText);
+                const tbody = document.querySelector('#funeral-list tbody');
+
+                data.forEach(item => {
+                    if (item.빈소) { // 빈소 데이터가 있는 행만 표시
+                        const tr = document.createElement('tr');
+                        tr.innerHTML = `
+                            <td>${item.빈소}</td>
+                            <td>${item.고인명}</td>
+                            <td>${item.상주}</td>
+                            <td>${item['발인/장지']}</td>
+                        `;
+                        tr.onclick = () => {
+                            window.location.href = `funeral.html?room=${item.빈소}`;
+                        };
+                        tbody.appendChild(tr);
+                    }
+                });
+            })
+            .catch(error => {
+                console.error('데이터를 불러오는 중 오류가 발생했습니다:', error);
+                document.getElementById('funeral-list').innerHTML = '<p>데이터를 불러오지 못했습니다. 구글 시트 URL을 확인해 주세요.</p>';
+            });
+    </script>
+</body>
+</html>
