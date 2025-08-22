@@ -67,7 +67,7 @@
         // 이 URL은 구글 시트 웹 게시 후 얻게 되는 URL로 변경해야 합니다.
         // 예를 들어: https://docs.google.com/spreadsheets/d/e/2PACX-1vT5.../pub?gid=0&single=true&output=csv
       // 원무과 스케줄과 다르게 이건 간단한 작업이므로 구글시트파일을 웹에 csv스타일로 게시한걸 가져옵니다.
-        const sheetUrl = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vQGQjtDo4HG2faMAuGC7hJZ-IFEDp3lFu0pvGgE0MrhdpMkxwktUCEC0qZJUiEMffUEci6zi8J72Sz_/pubhtml';
+        const sheetUrl = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vQGQjtDo4HG2faMAuGC7hJZ-IFEDp3lFu0pvGgE0MrhdpMkxwktUCEC0qZJUiEMffUEci6zi8J72Sz_/pub?output=csv';
 
         function parseCsv(text) {
             const lines = text.trim().split('\n').map(line => line.split(','));
