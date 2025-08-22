@@ -31,7 +31,7 @@
             width: 100%;
             height: 100vh;
             display: grid;
-            grid-template-rows: 15% 77% 8%; /* 상단 박스와 메인 콘텐츠, 하단 박스 높이 조정 */
+            grid-template-rows: 15% 70% 15%; 
             grid-template-columns: 1fr;
             padding: 1vh;
             box-sizing: border-box;
@@ -44,7 +44,8 @@
             box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
             display: flex;
             align-items: center;
-            justify-content: center;
+            justify-content: flex-start; /* 왼쪽 정렬 */
+            padding-left: 3vh; /* 왼쪽 여백 추가 */
         }
 
         .room-number-box {
@@ -53,7 +54,7 @@
             justify-content: center;
             width: 10vh;
             height: 10vh;
-            background-color: #2c3e50;
+            background-color: #FFD700; /* 노란색으로 변경 */
             border-radius: 10px;
             margin-right: 2vh;
         }
@@ -61,11 +62,11 @@
         .room-number {
             font-size: 6vh;
             font-weight: bold;
-            color: #ffffff;
+            color: #2c3e50; /* 텍스트 색상을 어둡게 */
         }
 
         .room-title {
-            font-size: 6vh;
+            font-size: 8vh; /* 분향실 글자 크기 더 키움 */
             font-weight: bold;
             color: #2c3e50;
         }
@@ -81,14 +82,15 @@
 
         .header-row {
             display: grid;
-            grid-template-columns: 35% 65%;
+            /* 고인명 칸을 30%로 줄이고 상주 칸을 70%로 넓힘 */
+            grid-template-columns: 30% 70%;
             border-bottom: 2px solid #e0e0e0;
         }
 
         .header-cell {
             background-color: #2c3e50;
             color: #ffffff;
-            font-size: 4vh; /* 제목 글자 크기 증가 */
+            font-size: 4.5vh; /* 제목 글자 크기 증가 */
             text-align: center;
             padding: 1vh; /* 제목 박스 크기 축소 */
             display: flex;
@@ -102,7 +104,8 @@
 
         .data-row {
             display: grid;
-            grid-template-columns: 35% 65%;
+            /* 고인명 칸을 30%로 줄이고 상주 칸을 70%로 넓힘 */
+            grid-template-columns: 30% 70%;
             text-align: center;
         }
         
@@ -120,37 +123,52 @@
             border-right: none;
         }
 
+        /* 고인명 글자 크기 더 크게 조정 */
         #deceased-name {
-            font-size: 6vh; /* 고인명 글자 크기 크게 */
+            font-size: 10vh;
         }
 
+        /* 상주 글자 크기 더 크게 조정 */
         #mourner-name {
-            font-size: 4vh; /* 상주 글자 크기 약간 증가 */
-            text-align: left; /* 상주 내용 왼쪽 정렬 */
+            font-size: 6vh; 
+            text-align: left; 
             justify-content: flex-start;
             padding-left: 3vh;
         }
 
-        .footer-content {
+        /* 하단 박스를 가로로 정렬하기 위한 컨테이너 */
+        .footer-container {
             display: grid;
-            grid-template-columns: 20% 30% 20% 30%; /* '발인'과 '장지' 글자용 박스 추가 */
-            background-color: #2c3e50;
-            color: #ffffff;
+            grid-template-columns: 1fr 1fr; /* 2개의 열로 나란히 배치 */
+            gap: 1vh; /* 두 박스 사이의 간격 */
+        }
+        
+        .info-box {
+            display: grid;
+            grid-template-columns: 35% 65%;
+            background-color: #ffffff;
             border-radius: 10px;
             box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
         }
 
-        .footer-label {
-            font-size: 3.5vh;
+        /* 발인/장지 라벨 글자 크기 더 크게 조정 */
+        .info-header {
+            background-color: #2c3e50;
+            color: #ffffff;
+            font-size: 5vh; 
             text-align: center;
             display: flex;
             align-items: center;
             justify-content: center;
-            border-right: 2px solid #ffffff;
+            border-top-left-radius: 10px;
+            border-bottom-left-radius: 10px;
+            padding: 1vh;
         }
 
-        .footer-data {
-            font-size: 3.5vh;
+        /* 발인/장지 데이터 글자 크기 더 크게 조정 */
+        .info-data {
+            color: #2c3e50;
+            font-size: 5vh; 
             text-align: center;
             display: flex;
             align-items: center;
@@ -158,10 +176,6 @@
             word-break: break-all;
             white-space: pre-wrap;
             padding: 1vh;
-        }
-        
-        .footer-data:first-of-type {
-            border-right: 2px solid #ffffff;
         }
     </style>
 </head>
@@ -184,12 +198,17 @@
                 <div class="data-cell" id="mourner-name"></div>
             </div>
         </div>
+        
+        <div class="footer-container">
+            <div class="info-box">
+                <div class="info-header">발인</div>
+                <div class="info-data" id="funeral-date"></div>
+            </div>
 
-        <div class="footer-content">
-            <div class="footer-label">발인</div>
-            <div class="footer-data" id="funeral-date"></div>
-            <div class="footer-label">장지</div>
-            <div class="footer-data" id="burial-place"></div>
+            <div class="info-box">
+                <div class="info-header">장지</div>
+                <div class="info-data" id="burial-place"></div>
+            </div>
         </div>
     </div>
 
@@ -201,7 +220,8 @@
 
         function getQueryParam(param) {
             const urlParams = new URLSearchParams(window.location.search);
-            return urlParams.get(param);
+            // 미리보기에서는 URL 매개변수가 없으므로 기본값을 1로 설정
+            return urlParams.get(param) || '1'; 
         }
 
         const roomNumber = getQueryParam('room');
