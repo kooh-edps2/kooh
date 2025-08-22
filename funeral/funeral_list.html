@@ -24,38 +24,35 @@
     </div>
 
     <script>
-        // 이 값을 실제 스프레드시트 ID와 API 키로 변경하세요.
+        // 이 ID를 실제 사용하시는 스프레드시트 ID로 변경하세요.
         const SPREADSHEET_ID = '19O4dLcRh-WXT0hWWFoLhQYhnpReAr0htIShNEUjEEDg';
-        const API_KEY = 'YOUR_API_KEY'; // Google Cloud Console에서 발급받은 키
+        const GID = 0; // 시트의 첫 번째 탭 ID. 보통 '0'입니다.
 
-        // API URL 구성 (예시: Sheet1의 A1부터 D100까지의 데이터를 가져옴)
-        // 실제 데이터 범위에 맞게 'Sheet1!A1:D100'을 수정하세요.
-        const sheetUrl = `https://sheets.googleapis.com/v4/spreadsheets/${SPREADSHEET_ID}/values/Sheet1!A1:D100?key=${API_KEY}`;
-        
+        const sheetUrl = `https://docs.google.com/spreadsheets/d/${SPREADSHEET_ID}/gviz/tq?gid=${GID}&tqx=out:json`;
+
         fetch(sheetUrl)
-            .then(response => {
-                if (!response.ok) {
-                    throw new Error('네트워크 응답이 올바르지 않습니다.');
-                }
-                return response.json();
-            })
-            .then(data => {
-                const values = data.values;
-                if (!values || values.length === 0) {
-                    throw new Error('데이터가 없습니다.');
-                }
+            .then(response => response.text())
+            .then(text => {
+                // JSONP 데이터를 순수 JSON으로 변환
+                const jsonText = text.substring(text.indexOf('{'), text.lastIndexOf('}') + 1);
+                const jsonData = JSON.parse(jsonText);
                 
-                const headers = values[0];
-                const rows = values.slice(1);
-                
+                const headers = jsonData.table.cols.map(col => col.label);
+                const rows = jsonData.table.rows;
+
                 const tbody = document.querySelector('#funeral-list tbody');
 
                 rows.forEach(row => {
                     const item = {};
-                    headers.forEach((header, i) => {
-                        item[header.trim()] = row[i] || '';
+                    row.c.forEach((cell, i) => {
+                        const header = headers[i];
+                        if (header) {
+                            // 셀 값 추출. JSON 데이터는 {v: 값, f: 형식화된 값} 구조를 가짐.
+                            item[header] = cell ? (cell.v || cell.f || '') : '';
+                        }
                     });
-                    
+
+                    // '분향실' 값이 있는 행만 테이블에 추가
                     if (item.분향실 && item.분향실.trim() !== '') {
                         const tr = document.createElement('tr');
                         tr.innerHTML = `
@@ -73,7 +70,7 @@
             })
             .catch(error => {
                 console.error('데이터를 불러오는 중 오류가 발생했습니다:', error);
-                document.getElementById('funeral-list').innerHTML = `<tr><td colspan="4" style="text-align:center;">데이터를 불러오지 못했습니다. API 설정과 URL을 확인해 주세요.</td></tr>`;
+                document.getElementById('funeral-list').innerHTML = '<tr><td colspan="4" style="text-align:center;">데이터를 불러오지 못했습니다. 구글 시트 URL을 확인해 주세요.</td></tr>';
             });
     </script>
 </body>
