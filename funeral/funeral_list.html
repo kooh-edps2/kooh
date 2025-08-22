@@ -94,8 +94,6 @@
             background-color: #f8f8f8;
         }
         
-        /* 열 너비 및 내용 글자 크기 조정 */
-        
         /* 분향실과 고인명 내용의 글자 크기를 더 크게 조정하고 중앙 정렬 */
         #funeral-list td:nth-child(1), #funeral-list td:nth-child(2) {
             font-size: 4vh;
@@ -104,7 +102,7 @@
 
         /* 상주 내용의 글자 크기를 조정하고 왼쪽 정렬 */
         #funeral-list td:nth-child(3) {
-            font-size: 3vh; /* 상주 내용의 글자 크기를 줄여 간격을 확보 */
+            font-size: 3vh;
             text-align: left;
         }
 
@@ -188,13 +186,14 @@
                         const roomName = item.분향실 ? `${String(item.분향실).trim()} 분향실` : '';
                         const deceasedName = item.고인명 ? `故 ${item.고인명}` : '';
                         const mournerName = item.상주 || '';
-                        const funeralDate = item['발인/장지'] || '';
+                        const funeralDate = item.발인 || '';
+                        const burialPlace = item.장지 || '';
 
                         tr.innerHTML = `
                             <td>${roomName}</td>
                             <td>${deceasedName}</td>
                             <td>${mournerName}</td>
-                            <td>${funeralDate}</td>
+                            <td>${funeralDate}<br>${burialPlace}</td>
                         `;
                         
                         tbody.appendChild(tr);
