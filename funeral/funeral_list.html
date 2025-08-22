@@ -24,32 +24,43 @@
     </div>
 
     <script>
-        const sheetUrl = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vQGQjtDo4HG2faMAuGC7hJZ-IFEDp3lFu0pvGgE0MrhdpMkxwktUCEC0qZJUiEMffUEci6zi8J72Sz_/gviz/tq?tqx=out:json';
+        const sheetUrl = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vQGQjtDo4HG2faMAuGC7hJZ-IFEDp3lFu0pvGgE0MrhdpMkxwktUCEC0qZJUiEMffUEci6zi8J72Sz_/pub?output=csv';
 
-        fetch(sheetUrl)
-            .then(response => response.text())
-            .then(text => {
-                // JSONP 데이터를 순수 JSON으로 변환
-                const jsonText = text.substring(text.indexOf('{'), text.lastIndexOf('}') + 1);
-                const jsonData = JSON.parse(jsonText);
-
-                const headers = jsonData.table.cols.map(col => col.label);
-                const rows = jsonData.table.rows;
-                
-                const data = rows.map(row => {
-                    const obj = {};
-                    row.c.forEach((cell, i) => {
-                        if (cell && headers[i]) {
-                            obj[headers[i]] = cell.v || '';
-                        }
+        // 가장 간단한 CSV 파싱 함수
+        function parseCsv(text) {
+            const lines = text.trim().split('\n');
+            const headers = lines[0].split(',').map(header => header.trim());
+            const data = [];
+            
+            for (let i = 1; i < lines.length; i++) {
+                const values = lines[i].split(',');
+                // 데이터 행의 셀 개수가 헤더 개수와 일치하는 경우에만 처리
+                if (values.length === headers.length) {
+                    const row = {};
+                    headers.forEach((header, j) => {
+                        // 각 셀의 앞뒤 공백 제거 및 따옴표 제거
+                        row[header] = values[j].trim().replace(/^"(.*)"$/, '$1');
                     });
-                    return obj;
-                });
-                
+                    data.push(row);
+                }
+            }
+            return data;
+        }
+        
+        fetch(sheetUrl)
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('네트워크 응답이 올바르지 않습니다.');
+                }
+                return response.text();
+            })
+            .then(csvText => {
+                const data = parseCsv(csvText);
                 const tbody = document.querySelector('#funeral-list tbody');
 
                 data.forEach(item => {
-                    if (item.분향실) {
+                    // '분향실' 값이 있는 행만 테이블에 추가
+                    if (item.분향실 && item.분향실.trim() !== '') {
                         const tr = document.createElement('tr');
                         tr.innerHTML = `
                             <td>${item.분향실}</td>
@@ -66,7 +77,7 @@
             })
             .catch(error => {
                 console.error('데이터를 불러오는 중 오류가 발생했습니다:', error);
-                document.getElementById('funeral-list').innerHTML = '<tr><td colspan="4" style="text-align:center;">데이터를 불러오지 못했습니다. 구글 시트 URL을 확인해 주세요.</td></tr>';
+                document.getElementById('funeral-list').innerHTML = '<tr><td colspan="4" style="text-align:center;">데이터를 불러오지 못했습니다. 구글 시트 URL과 헤더를 확인해 주세요.</td></tr>';
             });
     </script>
 </body>
