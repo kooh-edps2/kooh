@@ -52,7 +52,7 @@
         <table id="funeral-list">
             <thead>
                 <tr>
-                    <th>빈소</th>
+                    <th>분향실</th>
                     <th>고인명</th>
                     <th>상주</th>
                     <th>발인/장지</th>
@@ -66,7 +66,7 @@
     <script>
         const sheetUrl = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vQGQjtDo4HG2faMAuGC7hJZ-IFEDp3lFu0pvGgE0MrhdpMkxwktUCEC0qZJUiEMffUEci6zi8J72Sz_/pub?output=csv';
 
-        // CSV 파싱을 더 안정적으로 수정
+        // CSV 파싱 함수는 그대로 유지
         function parseCsv(text) {
             const lines = text.trim().split('\n');
             const headers = lines[0].split(',').map(header => header.trim().replace(/"/g, ''));
@@ -97,17 +97,16 @@
                 const tbody = document.querySelector('#funeral-list tbody');
 
                 data.forEach(item => {
-                    // item.빈소 가 존재하고 비어있지 않은 경우에만 테이블 행을 추가
-                    if (item.빈소 && item.빈소.trim() !== '') {
+                    if (item.분향실 && item.분향실.trim() !== '') {
                         const tr = document.createElement('tr');
                         tr.innerHTML = `
-                            <td>${item.빈소}</td>
+                            <td>${item.분향실}</td>
                             <td>${item.고인명}</td>
                             <td>${item.상주}</td>
                             <td>${item['발인/장지']}</td>
                         `;
                         tr.onclick = () => {
-                            window.location.href = `funeral.html?room=${item.빈소}`;
+                            window.location.href = `funeral.html?room=${item.분향실}`;
                         };
                         tbody.appendChild(tr);
                     }
