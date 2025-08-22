@@ -95,9 +95,6 @@
         }
         
         /* 열 너비 및 내용 글자 크기 조정 */
-        #funeral-list td {
-             font-size: 3.5vh;
-        }
         
         /* 분향실과 고인명 내용의 글자 크기를 더 크게 조정하고 중앙 정렬 */
         #funeral-list td:nth-child(1), #funeral-list td:nth-child(2) {
@@ -107,7 +104,7 @@
 
         /* 상주 내용의 글자 크기를 조정하고 왼쪽 정렬 */
         #funeral-list td:nth-child(3) {
-            font-size: 3.5vh;
+            font-size: 3vh; /* 상주 내용의 글자 크기를 줄여 간격을 확보 */
             text-align: left;
         }
 
@@ -200,13 +197,6 @@
                             <td>${funeralDate}</td>
                         `;
                         
-                        // 기존의 클릭 이벤트 제거
-                        // if (item.분향실) {
-                        //     tr.onclick = () => {
-                        //         window.location.href = `funeral.html?room=${item.분향실}`;
-                        //     };
-                        // }
-                        
                         tbody.appendChild(tr);
                     }
                 })
@@ -218,8 +208,8 @@
         
         // 페이지 로드 시 즉시 데이터 가져오기
         fetchData();
-        // 10초마다 데이터 새로고침
-        setInterval(fetchData, 10000);
+        // 30초마다 데이터 새로고침
+        setInterval(fetchData, 30000);
     </script>
 </body>
 </html>
