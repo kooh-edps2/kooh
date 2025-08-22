@@ -147,8 +147,8 @@
         </div>
 
         <div class="footer-content">
-            <div class="footer-cell">발인</div>
-            <div class="footer-cell">장지</div>
+            <div class="footer-cell" id="funeral-date">발인</div>
+            <div class="footer-cell" id="burial-place">장지</div>
         </div>
     </div>
 
@@ -183,7 +183,8 @@
                         row.c.forEach((cell, i) => {
                             const header = headers[i];
                             if (header) {
-                                item[header] = cell ? (cell.v || cell.f || '') : '';
+                                // 셀의 'f' (formatted value) 속성을 사용하여 정확한 값을 가져옴
+                                item[header] = cell ? (cell.f || cell.v || '') : '';
                             }
                         });
                         const room = item.분향실 ? String(item.분향실).trim() : '';
@@ -197,14 +198,14 @@
                         document.getElementById('room-title').textContent = `${item.분향실} 분향실`;
                         document.getElementById('deceased-name').textContent = `故 ${item.고인명}`;
                         document.getElementById('mourner-name').textContent = item.상주;
-                        document.getElementById('footer-cell-1').textContent = `발인: ${item['발인/장지'].split(' ')[0]}`;
-                        document.getElementById('footer-cell-2').textContent = `장지: ${item['발인/장지'].split(' ')[1]}`;
+                        document.getElementById('funeral-date').textContent = item.발인;
+                        document.getElementById('burial-place').textContent = item.장지;
                     } else {
                         document.getElementById('room-title').textContent = `${roomNumber} 분향실`;
                         document.getElementById('deceased-name').textContent = '정보 없음';
                         document.getElementById('mourner-name').textContent = '정보 없음';
-                        document.getElementById('footer-cell-1').textContent = '발인: 정보 없음';
-                        document.getElementById('footer-cell-2').textContent = '장지: 정보 없음';
+                        document.getElementById('funeral-date').textContent = '발인: 정보 없음';
+                        document.getElementById('burial-place').textContent = '장지: 정보 없음';
                     }
                 })
                 .catch(error => {
@@ -212,8 +213,8 @@
                     document.getElementById('room-title').textContent = `${roomNumber} 분향실`;
                     document.getElementById('deceased-name').textContent = '데이터 로딩 오류';
                     document.getElementById('mourner-name').textContent = '데이터 로딩 오류';
-                    document.getElementById('footer-cell-1').textContent = '발인: 오류';
-                    document.getElementById('footer-cell-2').textContent = '장지: 오류';
+                    document.getElementById('funeral-date').textContent = '발인: 오류';
+                    document.getElementById('burial-place').textContent = '장지: 오류';
                 });
         }
         
@@ -223,10 +224,6 @@
         } else {
             document.body.innerHTML = '<div style="text-align:center; padding: 20px;">URL에 분향실 번호가 없습니다. 예: funeral.html?room=1</div>';
         }
-
-        // Add IDs to footer cells for easier access
-        document.querySelector('.footer-content .footer-cell:nth-child(1)').id = 'footer-cell-1';
-        document.querySelector('.footer-content .footer-cell:nth-child(2)').id = 'footer-cell-2';
     </script>
 </body>
 </html>
