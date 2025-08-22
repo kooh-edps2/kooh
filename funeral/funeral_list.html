@@ -3,9 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>분향실 전체</title>
+    <title>구병원 장례식장</title>
     <style>
-        /* CSS를 외부 파일 대신 여기에 포함시킵니다 */
         @font-face {
             font-family: 'S-CoreDream';
             src: url('https://fastly.jsdelivr.net/gh/projectnoonnu/noonfonts_six@1.2/S-CoreDream-5Medium.woff') format('woff');
@@ -25,29 +24,47 @@
             box-sizing: border-box;
             background-color: #dee2e6;
             min-height: 100vh;
-            overflow: auto;
+            overflow: hidden; /* 스크롤 방지 */
         }
 
-        .container {
+        .title-box {
+            background-color: #ffffff;
+            border-radius: 10px;
+            margin-top: 0.5vh;
+            margin-left: 0.5vh;
+            margin-right: 0.5vh;
+            margin-bottom: 2vh;
+            padding: 1vh;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
             width: 98%;
             max-width: 1000px;
-            margin-top: 2vh;
+            box-sizing: border-box;
+            text-align: center;
         }
 
         h1 {
             font-size: 5vh;
             text-align: center;
             color: #2c3e50;
+            margin: 0;
+        }
+
+        .container {
+            width: 98%;
+            max-width: 1000px;
+            flex-grow: 1; /* 남은 공간을 채워서 스크롤 방지 */
+            display: flex;
+            flex-direction: column;
         }
 
         #funeral-list {
             width: 100%;
             border-collapse: collapse;
-            margin-top: 2vh;
             background-color: #ffffff;
             border-radius: 10px;
             overflow: hidden;
             box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            flex-grow: 1; /* 남은 공간을 채워서 스크롤 방지 */
         }
 
         #funeral-list th, #funeral-list td {
@@ -56,6 +73,8 @@
             text-align: center;
             word-break: break-all;
             white-space: pre-wrap;
+            height: calc((100vh - 12vh) / 4); /* 제목 및 여백을 제외한 높이 */
+            vertical-align: middle;
         }
 
         #funeral-list th {
@@ -68,11 +87,20 @@
             background-color: #f1f1f1;
             cursor: pointer;
         }
+        
+        #funeral-list th:nth-child(1), #funeral-list td:nth-child(1) { width: 25%; }
+        #funeral-list th:nth-child(2), #funeral-list td:nth-child(2) { width: 25%; }
+        #funeral-list th:nth-child(3), #funeral-list td:nth-child(3) { text-align: left; }
+        #funeral-list th:nth-child(4), #funeral-list td:nth-child(4) { width: 25%; }
+
     </style>
 </head>
 <body>
+    <div class="title-box">
+        <h1>구병원 장례식장</h1>
+    </div>
+    
     <div class="container">
-        <h1>장례식장 안내</h1>
         <table id="funeral-list">
             <thead>
                 <tr>
@@ -82,8 +110,9 @@
                     <th>발인/장지</th>
                 </tr>
             </thead>
-            <tbody>
-                </tbody>
+            <tbody id="funeral-body">
+                <!-- 구글 시트 데이터가 여기에 표시됩니다. -->
+            </tbody>
         </table>
     </div>
 
@@ -93,53 +122,74 @@
         // gid=0은 첫 번째 시트 탭을 의미합니다. 다른 탭을 사용한다면 gid 값을 변경하세요.
         const GID = 0; 
 
-        const sheetUrl = `https://docs.google.com/spreadsheets/d/${SPREADSHEET_ID}/gviz/tq?gid=${GID}&tqx=out:json`;
+        function fetchData() {
+            const sheetUrl = `https://docs.google.com/spreadsheets/d/${SPREADSHEET_ID}/gviz/tq?gid=${GID}&tqx=out:json`;
 
-        fetch(sheetUrl)
-            .then(response => response.text())
-            .then(text => {
-                // 구글 시각화 API는 JSONP 형태로 응답합니다.
-                // 불필요한 부분을 제거하고 순수한 JSON만 파싱합니다.
-                const jsonText = text.substring(text.indexOf('{'), text.lastIndexOf('}') + 1);
-                const jsonData = JSON.parse(jsonText);
-                
-                const headers = jsonData.table.cols.map(col => col.label);
-                const rows = jsonData.table.rows;
+            fetch(sheetUrl)
+                .then(response => response.text())
+                .then(text => {
+                    const jsonText = text.substring(text.indexOf('{'), text.lastIndexOf('}') + 1);
+                    const jsonData = JSON.parse(jsonText);
+                    
+                    const headers = jsonData.table.cols.map(col => col.label);
+                    const rows = jsonData.table.rows;
 
-                const tbody = document.querySelector('#funeral-list tbody');
+                    const tbody = document.querySelector('#funeral-body');
+                    tbody.innerHTML = ''; // 기존 행 삭제
 
-                rows.forEach(row => {
-                    const item = {};
-                    row.c.forEach((cell, i) => {
-                        const header = headers[i];
-                        if (header) {
-                            // 셀 값 추출. JSON 데이터는 {v: 값, f: 형식화된 값} 구조를 가짐.
-                            item[header] = cell ? (cell.v || cell.f || '') : '';
+                    const dataRows = [];
+                    // 데이터가 있는 행만 추출
+                    rows.forEach(row => {
+                        const item = {};
+                        row.c.forEach((cell, i) => {
+                            const header = headers[i];
+                            if (header) {
+                                item[header] = cell ? (cell.v || cell.f || '') : '';
+                            }
+                        });
+                        const roomName = item.분향실 ? String(item.분향실).trim() : '';
+                        if (roomName !== '') {
+                            dataRows.push(item);
                         }
                     });
 
-                    // 분향실 값이 유효한지 확인하고 trim()을 호출
-                    const roomName = item.분향실 ? String(item.분향실).trim() : '';
-                    
-                    if (roomName !== '') {
+                    // 총 3행이 표시되도록 데이터 채우기 (데이터가 부족해도 빈 행 생성)
+                    for (let i = 0; i < 3; i++) {
                         const tr = document.createElement('tr');
+                        const item = dataRows[i] || {}; // 데이터가 없으면 빈 객체 사용
+                        
+                        const roomName = item.분향실 ? `${String(item.분향실).trim()} 분향실` : '';
+                        const deceasedName = item.고인명 ? `故 ${item.고인명}` : '';
+                        const mournerName = item.상주 || '';
+                        const funeralDate = item['발인/장지'] || '';
+
                         tr.innerHTML = `
                             <td>${roomName}</td>
-                            <td>${item.고인명}</td>
-                            <td>${item.상주}</td>
-                            <td>${item['발인/장지']}</td>
+                            <td>${deceasedName}</td>
+                            <td>${mournerName}</td>
+                            <td>${funeralDate}</td>
                         `;
-                        tr.onclick = () => {
-                            window.location.href = `funeral.html?room=${roomName}`;
-                        };
+                        
+                        // 데이터가 있는 경우에만 클릭 이벤트 추가
+                        if (item.분향실) {
+                            tr.onclick = () => {
+                                window.location.href = `funeral.html?room=${item.분향실}`;
+                            };
+                        }
+                        
                         tbody.appendChild(tr);
                     }
+                })
+                .catch(error => {
+                    console.error('데이터를 불러오는 중 오류가 발생했습니다:', error);
+                    document.querySelector('#funeral-body').innerHTML = '<tr><td colspan="4" style="text-align:center;">데이터를 불러오지 못했습니다. 구글 시트 URL을 확인해 주세요.</td></tr>';
                 });
-            })
-            .catch(error => {
-                console.error('데이터를 불러오는 중 오류가 발생했습니다:', error);
-                document.getElementById('funeral-list').innerHTML = '<tr><td colspan="4" style="text-align:center;">데이터를 불러오지 못했습니다. 구글 시트 URL을 확인해 주세요.</td></tr>';
-            });
+        }
+        
+        // 페이지 로드 시 즉시 데이터 가져오기
+        fetchData();
+        // 30초마다 데이터 새로고침
+        setInterval(fetchData, 30000);
     </script>
 </body>
 </html>
