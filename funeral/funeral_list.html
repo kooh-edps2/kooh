@@ -66,18 +66,27 @@
     <script>
         const sheetUrl = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vQGQjtDo4HG2faMAuGC7hJZ-IFEDp3lFu0pvGgE0MrhdpMkxwktUCEC0qZJUiEMffUEci6zi8J72Sz_/pub?output=csv';
 
+        // 정규식을 사용하여 CSV를 더 안정적으로 파싱하는 함수
         function parseCsv(text) {
             const lines = text.trim().split('\n');
             const headers = lines[0].split(',').map(header => header.trim().replace(/"/g, ''));
             const data = [];
             
+            // CSV 파싱을 위한 정규식
+            const regex = /(?:"((?:[^"]|"")*)"|([^,]*))(?:,|$)/g;
+
             for (let i = 1; i < lines.length; i++) {
-                const values = lines[i].split(',');
-                if (values.length === headers.length) {
-                    const row = {};
-                    headers.forEach((header, j) => {
-                        row[header] = values[j].trim().replace(/"/g, '');
-                    });
+                const row = {};
+                let match;
+                let colIndex = 0;
+                while ((match = regex.exec(lines[i])) !== null) {
+                    const value = match[1] || match[2] || "";
+                    if (headers[colIndex]) {
+                        row[headers[colIndex]] = value.trim().replace(/""/g, '"');
+                    }
+                    colIndex++;
+                }
+                if (Object.keys(row).length > 0) {
                     data.push(row);
                 }
             }
@@ -86,17 +95,13 @@
         
         fetch(sheetUrl)
             .then(response => {
-                console.log('네트워크 응답 상태:', response.ok);
                 if (!response.ok) {
                     throw new Error('네트워크 응답이 올바르지 않습니다.');
                 }
                 return response.text();
             })
             .then(csvText => {
-                console.log('CSV 원본 텍스트:', csvText);
                 const data = parseCsv(csvText);
-                console.log('파싱된 데이터:', data);
-
                 const tbody = document.querySelector('#funeral-list tbody');
 
                 data.forEach(item => {
