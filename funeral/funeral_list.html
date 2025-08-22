@@ -118,17 +118,19 @@
                         }
                     });
 
-                    // '분향실' 값이 있는 행만 테이블에 추가
-                    if (item.분향실 && item.분향실.trim() !== '') {
+                    // 분향실 값이 유효한지 확인하고 trim()을 호출
+                    const roomName = item.분향실 ? String(item.분향실).trim() : '';
+                    
+                    if (roomName !== '') {
                         const tr = document.createElement('tr');
                         tr.innerHTML = `
-                            <td>${item.분향실}</td>
+                            <td>${roomName}</td>
                             <td>${item.고인명}</td>
                             <td>${item.상주}</td>
                             <td>${item['발인/장지']}</td>
                         `;
                         tr.onclick = () => {
-                            window.location.href = `funeral.html?room=${item.분향실}`;
+                            window.location.href = `funeral.html?room=${roomName}`;
                         };
                         tbody.appendChild(tr);
                     }
