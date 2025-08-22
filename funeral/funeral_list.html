@@ -24,55 +24,32 @@
     </div>
 
     <script>
-        // 이 URL을 CSV 형식으로 새로 얻은 구글 시트 URL로 변경해야 합니다.
-        // 예시: const sheetUrl = 'https://docs.google.com/spreadsheets/d/e/.../pub?output=csv';
-        const sheetUrl = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vQGQjtDo4HG2faMAuGC7hJZ-IFEDp3lFu0pvGgE0MrhdpMkxwktUCEC0qZJUiEMffUEci6zi8J72Sz_/pub?output=csv';
+        const sheetUrl = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vQGQjtDo4HG2faMAuGC7hJZ-IFEDp3lFu0pvGgE0MrhdpMkxwktUCEC0qZJUiEMffUEci6zi8J72Sz_/gviz/tq?tqx=out:json';
 
-        // CSV 파싱을 더 안정적으로 수정 (줄바꿈 및 쉼표 처리)
-        function parseCsv(text) {
-            // 이 정규식은 따옴표로 묶인 내용을 올바르게 파싱합니다.
-            const regex = /(?:"((?:[^"]|"")*)"|([^,]*))(?:,|$)/g;
-            const lines = text.trim().split(/\r?\n/);
-            const headers = [];
-            
-            // 헤더 파싱
-            let match;
-            while ((match = regex.exec(lines[0])) !== null) {
-                headers.push(match[1] || match[2]);
-            }
-
-            const data = [];
-            for (let i = 1; i < lines.length; i++) {
-                const row = {};
-                let colIndex = 0;
-                while ((match = regex.exec(lines[i])) !== null) {
-                    const value = match[1] || match[2] || "";
-                    if (headers[colIndex]) {
-                        row[headers[colIndex].trim()] = value.trim().replace(/""/g, '"');
-                    }
-                    colIndex++;
-                }
-                // 빈 행은 무시
-                if (Object.values(row).some(val => val !== '')) {
-                    data.push(row);
-                }
-            }
-            return data;
-        }
-        
         fetch(sheetUrl)
-            .then(response => {
-                if (!response.ok) {
-                    throw new Error('네트워크 응답이 올바르지 않습니다.');
-                }
-                return response.text();
-            })
-            .then(csvText => {
-                const data = parseCsv(csvText);
+            .then(response => response.text())
+            .then(text => {
+                // JSONP 데이터를 순수 JSON으로 변환
+                const jsonText = text.substring(text.indexOf('{'), text.lastIndexOf('}') + 1);
+                const jsonData = JSON.parse(jsonText);
+
+                const headers = jsonData.table.cols.map(col => col.label);
+                const rows = jsonData.table.rows;
+                
+                const data = rows.map(row => {
+                    const obj = {};
+                    row.c.forEach((cell, i) => {
+                        if (cell && headers[i]) {
+                            obj[headers[i]] = cell.v || '';
+                        }
+                    });
+                    return obj;
+                });
+                
                 const tbody = document.querySelector('#funeral-list tbody');
 
                 data.forEach(item => {
-                    if (item.분향실 && item.분향실.trim() !== '') {
+                    if (item.분향실) {
                         const tr = document.createElement('tr');
                         tr.innerHTML = `
                             <td>${item.분향실}</td>
@@ -89,4 +66,8 @@
             })
             .catch(error => {
                 console.error('데이터를 불러오는 중 오류가 발생했습니다:', error);
-                document.getElementById('funeral-
+                document.getElementById('funeral-list').innerHTML = '<tr><td colspan="4" style="text-align:center;">데이터를 불러오지 못했습니다. 구글 시트 URL을 확인해 주세요.</td></tr>';
+            });
+    </script>
+</body>
+</html>
