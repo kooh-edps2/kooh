@@ -169,7 +169,8 @@
                         row.c.forEach((cell, i) => {
                             const header = headers[i];
                             if (header) {
-                                item[header] = cell ? (cell.v || cell.f || '') : '';
+                                // 셀의 'f' (formatted value) 속성을 사용
+                                item[header] = cell ? (cell.f || cell.v || '') : '';
                             }
                         });
                         const roomName = item.분향실 ? String(item.분향실).trim() : '';
@@ -186,6 +187,8 @@
                         const roomName = item.분향실 ? `${String(item.분향실).trim()} 분향실` : '';
                         const deceasedName = item.고인명 ? `故 ${item.고인명}` : '';
                         const mournerName = item.상주 || '';
+                        
+                        // '발인'과 '장지' 데이터를 formatted value로 가져와 사용
                         const funeralDate = item.발인 || '';
                         const burialPlace = item.장지 || '';
 
