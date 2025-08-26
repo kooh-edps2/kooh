@@ -1,0 +1,420 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>진료시간 안내</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        @font-face {
+            font-family: 'S-CoreDream';
+            src: url('https://fastly.jsdelivr.net/gh/projectnoonnu/noonfonts_six@1.2/S-CoreDream-5Medium.woff') format('woff');
+            font-weight: normal;
+            font-style: normal;
+            font-display: swap;
+        }
+
+        @font-face {
+            font-family: 'GmarketSansMedium';
+            src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_2001@1.1/GmarketSansMedium.woff2') format('woff2'),
+                 url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_2001@1.1/GmarketSansMedium.woff') format('woff');
+            font-weight: normal;
+            font-style: normal;
+        }
+
+        body {
+            font-family: 'S-CoreDream', 'Malgun Gothic', '맑은 고딕', sans-serif;
+            font-size: 3vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin: 0;
+            padding: 0.2vh;
+            box-sizing: border-box;
+            background-color: #212529;
+            color: #f8f9fa;
+            height: 100vh;
+            overflow: auto;
+        }
+
+        .title-box {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background-color: #004c6d; /* 깊고 선명한 파란색으로 변경 */
+            border: 1px solid #0077a6; /* 테두리 색상도 함께 변경 */
+            border-radius: 10px;
+            margin-top: 0.5vh;
+            margin-left: 0.5vh;
+            margin-right: 0.5vh;
+            margin-bottom: 1vh;
+            padding: 0.5vh 1.5vh;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+            width: 98%;
+            box-sizing: border-box;
+        }
+
+        .main-title {
+            font-family: 'GmarketSansMedium', sans-serif;
+            color: #f8f9fa;
+            margin: 0;
+            font-size: 5vh;
+            font-weight: bold;
+            letter-spacing: 2px;
+        }
+
+        .current-date {
+            font-family: 'S-CoreDream', sans-serif;
+            font-size: 2.5vh;
+            font-weight: normal;
+            color: #ced4da;
+        }
+
+        .schedule-container {
+            display: flex;
+            flex-direction: row;
+            flex-wrap: wrap;
+            justify-content: center;
+            flex: 1;
+            width: 98%;
+            background-color: #2a3641;
+            border-radius: 10px;
+            padding: 0.2vh;
+            box-sizing: border-box;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+            overflow: auto;
+        }
+
+        .time-slot-box {
+            display: flex;
+            flex-direction: column;
+            border: 1px solid #4a5c6d;
+            border-radius: 8px;
+            margin: 0.3vh;
+            padding: 0.5vh;
+            flex: 1 1 45%;
+            min-width: 300px;
+            transition: opacity 0.5s ease, filter 0.5s ease;
+        }
+
+        .time-slot-box.am {
+            background-color: #242f39;
+        }
+
+        .time-slot-box.pm {
+            background-color: #242f39;
+        }
+
+        .schedule-section-title {
+            font-family: 'GmarketSansMedium', sans-serif;
+            text-align: center;
+            color: #f8f9fa;
+            margin: 0 0 0.5vh 0;
+            font-size: 4.5vh;
+            font-weight: bold;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 1em;
+            border-spacing: 0;
+            table-layout: fixed;
+        }
+
+        th, td {
+            border: 0;
+            padding: 0.5vh;
+            text-align: center;
+            white-space: normal;
+        }
+
+        th:nth-child(1), td:nth-child(1) {
+            width: 46%;
+        }
+        
+        td:nth-child(1) {
+            text-align: left;
+            padding-left: 3em;
+        }
+
+        th:nth-child(2), td:nth-child(2) {
+            width: 27%;
+        }
+        th:nth-child(3), td:nth-child(3) {
+            width: 27%;
+        }
+
+        th {
+            font-family: 'GmarketSansMedium', sans-serif;
+            background-color: #495057;
+            color: #f8f9fa;
+            font-weight: bold;
+            font-size: 1.1em;
+        }
+
+        .time-slot-box.am th {
+            background-color: #0097e6; /* 오전: 밝은 파란색 */
+        }
+
+        .time-slot-box.pm th {
+            background-color: #27ae60; /* 오후: 밝은 녹색 */
+        }
+
+        .closed {
+            color: #a3c4ff;
+            font-weight: bold;
+        }
+        .surgery {
+            color: #ff9a9a;
+            font-weight: bold;
+        }
+        .finished {
+            color: #ff9a9a;
+            font-weight: bold;
+        }
+        .open {
+            /* No visible text to style */
+            font-weight: bold;
+        }
+
+        /* Highlighter effect for doctor's name */
+        .highlight-text {
+            padding: 0.1em 0.4em;
+            border-radius: 4px;
+            color: #18181b; /* Dark text for contrast on all highlights */
+        }
+        .highlight-closed {
+            background-color: #a3c4ff; /* Corresponds to .closed color */
+        }
+        .highlight-surgery,
+        .highlight-finished {
+            background-color: #ff9a9a; /* Corresponds to .surgery/.finished color */
+        }
+
+        /* Grouping Styles */
+        .group-start td, .group-middle td, .group-end td {
+            background-color: #3c424a; /* 그룹화된 행의 배경색 */
+        }
+
+        .group-start td {
+            border-top: 2px solid #6c757d;
+        }
+        .group-end td {
+            border-bottom: 2px solid #6c757d;
+        }
+
+        .version-info {
+            position: fixed;
+            right: 5px;
+            bottom: 5px;
+            font-size: 0.3em;
+            color: #6c757d;
+            user-select: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="title-box">
+        <h1 class="main-title">구병원 진료 스케줄</h1>
+        <p class="current-date"></p>
+    </div>
+    
+    <div class="schedule-container">
+        <!-- 오전 진료 -->
+        <div class="time-slot-box am">
+            <h2 class="schedule-section-title">오전 진료</h2>
+            <table>
+                <thead>
+                    <tr>
+                        <th>진료과</th>
+                        <th>진료의사</th>
+                        <th>비고</th>
+                    </tr>
+                </thead>
+                <tbody id="am-schedule-body"></tbody>
+            </table>
+        </div>
+
+        <!-- 오후 진료 -->
+        <div class="time-slot-box pm">
+            <h2 class="schedule-section-title">오후 진료</h2>
+            <table>
+                <thead>
+                    <tr>
+                        <th>진료과</th>
+                        <th>진료의사</th>
+                        <th>비고</th>
+                    </tr>
+                </thead>
+                <tbody id="pm-schedule-body"></tbody>
+            </table>
+        </div>
+    </div>
+
+    <p class="version-info">v.20250813-010</p>
+
+    <script>
+        const sheetId = '1m0kCyq3QI9e203Rkhh0_gTFD6Jdafn89p3-AbddZ2OU';
+        const dayNames = ['일', '월', '화', '수', '목', '금', '토'];
+
+        const gidMap = {
+            '일': '1340551526',
+            '월': '166831320',
+            '화': '1050890560',
+            '수': '675567842',
+            '목': '1074220298',
+            '금': '1055010041',
+            '토': '944320917',
+        };
+
+        const departmentIcons = {
+            '외과': '⚕️',
+            '내과': '🩺',
+            '갑상선유방센터': '🎀',
+            '신경외과': '🧠',
+            '정형외과': '🦴',
+            '산부인과': '🤰'
+        };
+
+        const getDepartment = (row, index) => {
+            if (!row || !row.c[index]) return '';
+            let department = row.c[index].v;
+            if (department.includes(':')) {
+                department = department.split(':')[1].trim();
+            }
+            return department;
+        };
+
+        function fetchSchedule() {
+            const today = new Date();
+            const year = today.getFullYear();
+            const month = today.getMonth() + 1;
+            const day = today.getDate();
+            const dayOfWeek = dayNames[today.getDay()];
+            const dateContainer = document.querySelector('.current-date');
+            dateContainer.textContent = `(${year}년 ${month}월 ${day}일 ${dayOfWeek}요일)`;
+
+            const currentDayName = dayNames[today.getDay()];
+            const currentGid = gidMap[currentDayName];
+            
+            if (!currentGid) {
+                console.error(`Error: Gid for ${currentDayName} not found.`);
+                return;
+            }
+
+            const apiUrl = `https://docs.google.com/spreadsheets/d/${sheetId}/gviz/tq?gid=${currentGid}&tqx=out:json`;
+            
+            fetch(apiUrl)
+                .then(res => {
+                    if (!res.ok) {
+                        throw new Error(`HTTP error! status: ${res.status}`);
+                    }
+                    return res.text();
+                })
+                .then(text => {
+                    // Google's JSONP-like response needs to be cleaned up
+                    const match = text.match(/google\.visualization\.Query\.setResponse\(([\s\S]+)\)/);
+                    if (!match || !match[1]) {
+                        throw new Error('Google Sheet 응답 형식을 파싱할 수 없습니다.');
+                    }
+                    const jsonText = match[1];
+                    const json = JSON.parse(jsonText);
+
+                    const table = json.table;
+                    const rawRows = table.rows;
+
+                    const headers = rawRows[0].c.map(header => (header ? header.v : ''));
+
+                    const ampmIndex = headers.indexOf('오전/오후');
+                    const departmentIndex = headers.indexOf('진료과');
+                    const doctorIndex = headers.indexOf('진료의사');
+                    const statusIndex = headers.indexOf('비고');
+
+                    if ([ampmIndex, departmentIndex, doctorIndex, statusIndex].includes(-1)) {
+                        console.error('Error: Required column headers not found.');
+                        return;
+                    }
+
+                    const amRows = [];
+                    const pmRows = [];
+
+                    for (let i = 1; i < rawRows.length; i++) {
+                        const row = rawRows[i];
+                        const ampm = row.c[ampmIndex] ? row.c[ampmIndex].v : '';
+                        if (ampm === '오전') {
+                            amRows.push(row);
+                        } else if (ampm === '오후') {
+                            pmRows.push(row);
+                        }
+                    }
+
+                    const renderGroupedRows = (tbody, dataRows) => {
+                        tbody.innerHTML = '';
+                        for (let i = 0; i < dataRows.length; i++) {
+                            const currentRow = dataRows[i];
+                            const prevRow = dataRows[i - 1];
+                            const nextRow = dataRows[i + 1];
+
+                            const currentDept = getDepartment(currentRow, departmentIndex);
+                            const prevDept = getDepartment(prevRow, departmentIndex);
+                            const nextDept = getDepartment(nextRow, departmentIndex);
+
+                            let groupClass = '';
+                            if (currentDept !== prevDept) {
+                                groupClass += 'group-start ';
+                            }
+                            if (currentDept !== nextDept) {
+                                groupClass += 'group-end ';
+                            }
+                            if (currentDept === prevDept && currentDept === nextDept) {
+                                groupClass += 'group-middle ';
+                            }
+
+                            const doctor = currentRow.c[doctorIndex] ? currentRow.c[doctorIndex].v : '';
+                            const status = currentRow.c[statusIndex] ? currentRow.c[statusIndex].v : '';
+                            const icon = departmentIcons[currentDept] || '';
+
+                            let statusClass = '';
+                            if (status === '휴진') statusClass = 'closed';
+                            else if (status === '수술중') statusClass = 'surgery';
+                            else if (status === '마감') statusClass = 'finished';
+                            else if (status === 'O') statusClass = 'open';
+                            
+                            const cellContent = status === 'O' ? '' : status;
+                            let statusCellContent = cellContent;
+                            if (statusClass && statusClass !== 'open') {
+                                const highlightColorClass = `highlight-${statusClass}`;
+                                statusCellContent = `<span class="highlight-text ${highlightColorClass}">${cellContent}</span>`;
+                            }
+
+                            const tr = document.createElement('tr');
+                            tr.className = groupClass.trim();
+                            tr.innerHTML = `
+                                <td>${icon} ${currentDept}</td>
+                                <td>${doctor}</td>
+                                <td class="${statusClass}">${statusCellContent}</td>
+                            `;
+                            tbody.appendChild(tr);
+                        }
+                    };
+
+                    const amScheduleBody = document.querySelector('#am-schedule-body');
+                    const pmScheduleBody = document.querySelector('#pm-schedule-body');
+                    renderGroupedRows(amScheduleBody, amRows);
+                    renderGroupedRows(pmScheduleBody, pmRows);
+                })
+                .catch(e => {
+                    console.error('Fetch error:', e);
+                    const amScheduleBody = document.querySelector('#am-schedule-body');
+                    const pmScheduleBody = document.querySelector('#pm-schedule-body');
+                    const errorMessage = `데이터를 불러오는 데 실패했습니다. 네트워크 또는 구글 시트 설정을 확인해주세요. (오류: ${e.message})`;
+                    amScheduleBody.innerHTML = `<tr><td colspan="3" style="color: red; white-space: normal;">${errorMessage}</td></tr>`;
+                    pmScheduleBody.innerHTML = '';
+                });
+        }
+
+        setInterval(fetchSchedule, 30000);
+        fetchSchedule();
+    </script>
+</body>
+</html>
