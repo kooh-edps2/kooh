@@ -127,14 +127,14 @@
         table {
             width: 100%;
             border-collapse: collapse;
-            font-size: 1em;
+            font-size: 3.7vh; /* 글자 크기 재조정 */
             border-spacing: 0;
             table-layout: fixed;
         }
 
         th, td {
             border: 0;
-            padding: 0.5vh;
+            padding: 0.2vh 0.5vh; /* 수직 여백 최소화, 수평 여백 유지 */
             text-align: center;
             white-space: normal;
         }
@@ -145,7 +145,7 @@
         
         td:nth-child(1) {
             text-align: left;
-            padding-left: 3em;
+            padding-left: 1.5em; /* 진료과 여백을 절반으로 줄임 */
         }
 
         th:nth-child(2), td:nth-child(2) {
@@ -196,7 +196,7 @@
 
         /* Highlighter effect for doctor's name */
         .highlight-text {
-            padding: 0.1em 0.4em;
+            padding: 0 0.4em; /* 수직 여백을 제거하여 박스 높이 조정 */
             border-radius: 4px;
             color: #18181b; /* Dark text for contrast on all highlights */
         }
