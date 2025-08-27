@@ -128,7 +128,8 @@
 
         /* 고인명 글자 크기 더 크게 조정 */
         #deceased-name {
-            font-size: 10vh;
+            font-size: 8.5vh; /* 폰트 크기를 줄여 여백 확보 */
+            padding: 2.5vh 1vh; /* 상하 여백 늘림 */
         }
 
         /* 상주 글자 크기 더 크게 조정 */
@@ -253,6 +254,8 @@
             #deceased-name { /* 고인명 데이터 */
                 grid-area: deceased-data;
                 border-bottom: 2px solid #e0e0e0;
+                font-size: 11vw; /* 세로 모드 폰트 크기 조정 */
+                padding: 2.5vw 1vh; /* 세로 모드 상하 여백 늘림 */
             }
             .header-cell:nth-child(2) { /* 상주 라벨 */
                 grid-area: mourner-label;
