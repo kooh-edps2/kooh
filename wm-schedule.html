@@ -154,10 +154,12 @@
 
         .time-slot-box.am th {
             background-color: #0097e6; /* 오전: 밝은 파란색 */
+            color: #212529; /* 가독성을 위해 어두운 글자색으로 변경 */
         }
 
         .time-slot-box.pm th {
             background-color: #27ae60; /* 오후: 밝은 녹색 */
+            color: #212529; /* 가독성을 위해 어두운 글자색으로 변경 */
         }
 
         .closed {
@@ -170,6 +172,10 @@
         }
         .finished {
             color: #ff9a9a;
+            font-weight: bold;
+        }
+        .congestion {
+            color: #f39c12; /* 주의를 나타내는 부드러운 주황색 */
             font-weight: bold;
         }
         .open {
@@ -189,6 +195,9 @@
         .highlight-surgery,
         .highlight-finished {
             background-color: #ff9a9a; /* Corresponds to .surgery/.finished color */
+        }
+        .highlight-congestion {
+            background-color: #f39c12; /* Corresponds to .congestion color */
         }
 
         /* Grouping Styles */
@@ -378,6 +387,7 @@
                             if (status === '휴진') statusClass = 'closed';
                             else if (status === '수술중') statusClass = 'surgery';
                             else if (status === '마감') statusClass = 'finished';
+                            else if (status === '대기혼잡') statusClass = 'congestion';
                             else if (status === 'O') statusClass = 'open';
                             
                             const cellContent = status === 'O' ? '' : status;
