@@ -28,21 +28,78 @@
         }
 
         .title-box {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
             background-color: #ffffff;
             border-radius: 10px;
             margin: 0.5vh;
-            padding: 1.5vh 0;
+            padding: 0.5vh 1.5vh;
             box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
             width: calc(100% - 1vh);
             max-width: none;
             box-sizing: border-box;
-            text-align: center;
+        }
+
+        #logo {
+            height: 7vh;
+            width: 7vh; /* 로고가 원형을 유지하도록 너비 추가 */
+            margin-right: 1.5vh;
+        }
+
+        .title-group {
+            display: flex;
+            align-items: center; /* 로고와 텍스트 수직 정렬 */
+            gap: 1em;
         }
 
         h1 {
-            font-size: 4vh;
+            font-size: 5vh;
             color: #2c3e50;
             margin: 0;
+        }
+
+        .current-datetime {
+            font-size: 2vh;
+            color: #868e96;
+            margin: 0;
+        }
+
+        .circular-timer {
+            width: 4vh;
+            height: 4vh;
+        }
+        .circular-chart {
+            display: block;
+            max-width: 100%;
+            max-height: 100%;
+        }
+        .circular-chart .circle-bg {
+            fill: none;
+            stroke: #e9ecef;
+            stroke-width: 3.8;
+        }
+        .circular-chart .circle {
+            fill: none;
+            stroke: #495057;
+            stroke-width: 2.8;
+            stroke-linecap: round;
+            transform: rotate(-90deg);
+            transform-origin: 50% 50%;
+            transition: stroke-dashoffset 1s linear;
+        }
+
+        .watermark-logo {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            z-index: 0;
+            opacity: 0.05;
+            width: 50vw;
+            max-height: 50vh;
+            pointer-events: none;
+            object-fit: contain; /* 이미지 비율을 유지하도록 추가 */
         }
 
         .container {
@@ -85,8 +142,9 @@
         #funeral-list th {
             background-color: #2c3e50;
             color: #ffffff;
-            font-size: 3.5vh;
+            font-size: 4vh;
             text-align: center;
+            padding: 1vh;
         }
 
         /* 2행마다 음영 효과 */
@@ -94,9 +152,14 @@
             background-color: #f8f8f8;
         }
         
-        /* 분향실과 고인명 내용의 글자 크기를 더 크게 조정하고 중앙 정렬 */
-        #funeral-list td:nth-child(1), #funeral-list td:nth-child(2) {
-            font-size: 4vh;
+        /* 분향실 내용의 글자 크기 */
+        #funeral-list td:nth-child(1) {
+            font-size: 4.5vh;
+            text-align: center;
+        }
+        /* 고인명 내용의 글자 크기를 더 크게 조정 */
+        #funeral-list td:nth-child(2) {
+            font-size: 5vh;
             text-align: center;
         }
 
@@ -108,7 +171,7 @@
 
         /* 발인/장지 내용의 글자 크기를 조정하고 중앙 정렬 */
         #funeral-list td:nth-child(4) {
-            font-size: 3.5vh;
+            font-size: 4vh;
             text-align: center;
         }
         
@@ -121,8 +184,24 @@
     </style>
 </head>
 <body>
+    <img class="watermark-logo" src="kooh_logo.png" alt="배경 로고" onerror="this.style.display='none'">
     <div class="title-box">
-        <h1>구병원 장례식장 안내</h1>
+        <div class="title-group">
+            <img id="logo" src="kooh_logo.png" alt="구병원 로고" onerror="this.style.display='none'">
+            <h1>구병원 장례식장 안내</h1>
+            <p class="current-datetime"></p>
+        </div>
+        <div id="refresh-timer" class="circular-timer">
+            <svg viewBox="0 0 36 36" class="circular-chart">
+                <path class="circle-bg"
+                    d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"
+                />
+                <path class="circle"
+                    stroke-dasharray="100, 100"
+                    d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"
+                />
+            </svg>
+        </div>
     </div>
     
     <div class="container">
@@ -146,8 +225,37 @@
         const SPREADSHEET_ID = '19O4dLcRh-WXT0hWWFoLhQYhnpReAr0htIShNEUjEEDg';
         // gid=0은 첫 번째 시트 탭을 의미합니다. 다른 탭을 사용한다면 gid 값을 변경하세요.
         const GID = 0; 
+        const REFRESH_INTERVAL = 30000; // 30초
+
+        function updateDateTime() {
+            const now = new Date();
+            const year = now.getFullYear();
+            const month = String(now.getMonth() + 1).padStart(2, '0');
+            const day = String(now.getDate()).padStart(2, '0');
+            const hours = String(now.getHours()).padStart(2, '0');
+            const minutes = String(now.getMinutes()).padStart(2, '0');
+            
+            const dateTimeString = `${year}년 ${month}월 ${day}일 ${hours}:${minutes}`;
+            const dateTimeElement = document.querySelector('.current-datetime');
+            if (dateTimeElement) {
+                dateTimeElement.textContent = dateTimeString;
+            }
+        }
+
+        function restartCircularTimerAnimation(circleElement, interval) {
+            if (!circleElement) return;
+            circleElement.style.transition = 'none';
+            circleElement.style.strokeDashoffset = '100';
+            setTimeout(() => {
+                circleElement.style.transition = `stroke-dashoffset ${interval / 1000}s linear`;
+                circleElement.style.strokeDashoffset = '0';
+            }, 50);
+        }
 
         function fetchData() {
+            const refreshTimerCircle = document.querySelector('#refresh-timer .circle');
+            restartCircularTimerAnimation(refreshTimerCircle, REFRESH_INTERVAL);
+
             const sheetUrl = `https://docs.google.com/spreadsheets/d/${SPREADSHEET_ID}/gviz/tq?gid=${GID}&tqx=out:json`;
 
             fetch(sheetUrl)
@@ -210,8 +318,12 @@
         
         // 페이지 로드 시 즉시 데이터 가져오기
         fetchData();
+        updateDateTime();
+
         // 30초마다 데이터 새로고침
-        setInterval(fetchData, 30000);
+        setInterval(fetchData, REFRESH_INTERVAL);
+        // 1분마다 시간 업데이트
+        setInterval(updateDateTime, 60000);
     </script>
 </body>
 </html>
