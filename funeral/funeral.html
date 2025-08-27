@@ -31,8 +31,8 @@
             width: 100%;
             height: 100vh;
             display: grid;
-            /* 고인명/상주 표 높이를 늘리고, 발인/장지 표 높이를 줄여 비율 조정 */
-            grid-template-rows: 15% 75% 10%; 
+            /* 제목 박스 높이를 줄이고, 메인 콘텐츠 영역을 늘림 */
+            grid-template-rows: 12% 78% 10%; 
             grid-template-columns: 1fr;
             padding: 1vh;
             box-sizing: border-box;
@@ -45,8 +45,13 @@
             box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
             display: flex;
             align-items: center;
-            justify-content: flex-start; /* 왼쪽 정렬 */
-            padding-left: 3vh; /* 왼쪽 여백 추가 */
+            justify-content: space-between; /* 양쪽 정렬로 변경 */
+            padding: 0 3vh; /* 좌우 여백 */
+        }
+
+        .title-group {
+            display: flex;
+            align-items: center;
         }
 
         .room-number-box {
@@ -74,7 +79,8 @@
 
         .main-content {
             display: grid;
-            grid-template-rows: 15% 85%;
+            /* 헤더 높이를 줄이고, 데이터 영역을 늘림 */
+            grid-template-rows: 12% 88%;
             grid-template-columns: 1fr;
             background-color: #ffffff;
             border-radius: 10px;
@@ -93,7 +99,7 @@
             color: #ffffff;
             font-size: 4.5vh; /* 제목 글자 크기 증가 */
             text-align: center;
-            padding: 1vh; /* 제목 박스 크기 축소 */
+            padding: 0.5vh; /* 제목 박스 상하 여백 축소 */
             display: flex;
             align-items: center;
             justify-content: center;
@@ -134,7 +140,7 @@
             font-size: 6vh; 
             text-align: left; 
             justify-content: flex-start;
-            padding-left: 3vh;
+            padding: 1.5vh 1vh 1.5vh 3vh; /* 상하 여백 추가 */
         }
 
         /* 하단 박스를 가로로 정렬하기 위한 컨테이너 */
@@ -178,15 +184,52 @@
             white-space: pre-wrap;
             padding: 1vh;
         }
+
+        .circular-timer {
+            width: 6vh;
+            height: 6vh;
+        }
+        .circular-chart {
+            display: block;
+            max-width: 100%;
+            max-height: 100%;
+        }
+        .circular-chart .circle-bg {
+            fill: none;
+            stroke: #e9ecef;
+            stroke-width: 3.8;
+        }
+        .circular-chart .circle {
+            fill: none;
+            stroke: #495057;
+            stroke-width: 2.8;
+            stroke-linecap: round;
+            transform: rotate(-90deg);
+            transform-origin: 50% 50%;
+            transition: stroke-dashoffset 1s linear;
+        }
     </style>
 </head>
 <body>
     <div class="container">
         <div class="title-box">
-            <div class="room-number-box">
-                <span class="room-number" id="room-number"></span>
+            <div class="title-group">
+                <div class="room-number-box">
+                    <span class="room-number" id="room-number"></span>
+                </div>
+                <span class="room-title">분향실</span>
             </div>
-            <span class="room-title">분향실</span>
+            <div id="refresh-timer" class="circular-timer">
+                <svg viewBox="0 0 36 36" class="circular-chart">
+                    <path class="circle-bg"
+                        d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"
+                    />
+                    <path class="circle"
+                        stroke-dasharray="100, 100"
+                        d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"
+                    />
+                </svg>
+            </div>
         </div>
 
         <div class="main-content">
@@ -218,17 +261,23 @@
         const SPREADSHEET_ID = '19O4dLcRh-WXT0hWWFoLhQYhnpReAr0htIShNEUjEEDg';
         // gid=0은 첫 번째 시트 탭을 의미합니다. 다른 탭을 사용한다면 gid 값을 변경하세요.
         const GID = 0;
+        const REFRESH_INTERVAL = 30000; // 30초
 
-        function getQueryParam(param) {
-            const urlParams = new URLSearchParams(window.location.search);
-            // 미리보기에서는 URL 매개변수가 없으므로 기본값을 1로 설정
-            return urlParams.get(param) || '1'; 
+        function restartCircularTimerAnimation(circleElement, interval) {
+            if (!circleElement) return;
+            circleElement.style.transition = 'none';
+            circleElement.style.strokeDashoffset = '100';
+            setTimeout(() => {
+                circleElement.style.transition = `stroke-dashoffset ${interval / 1000}s linear`;
+                circleElement.style.strokeDashoffset = '0';
+            }, 50);
         }
-
-        const roomNumber = getQueryParam('room');
 
         function fetchData() {
             const sheetUrl = `https://docs.google.com/spreadsheets/d/${SPREADSHEET_ID}/gviz/tq?gid=${GID}&tqx=out:json`;
+            const container = document.querySelector('.container');
+            const refreshTimerCircle = document.querySelector('#refresh-timer .circle');
+            restartCircularTimerAnimation(refreshTimerCircle, REFRESH_INTERVAL);
 
             fetch(sheetUrl)
                 .then(response => response.text())
@@ -255,23 +304,24 @@
                         }
                     });
 
+                    // 데이터 유무에 따라 화면 표시/숨김 처리
                     if (dataRows.length > 0) {
+                        container.style.display = 'grid';
                         const item = dataRows[0];
-                        document.getElementById('room-number').textContent = item.분향실;
-                        document.getElementById('deceased-name').textContent = `故 ${item.고인명}`;
-                        document.getElementById('mourner-name').textContent = item.상주;
-                        document.getElementById('funeral-date').textContent = item.발인;
-                        document.getElementById('burial-place').textContent = item.장지;
+                        const deceasedName = item.고인명 || '';
+
+                        document.getElementById('room-number').textContent = item.분향실 || roomNumber;
+                        document.getElementById('deceased-name').textContent = deceasedName.trim() ? `故 ${deceasedName}` : '';
+                        document.getElementById('mourner-name').textContent = item.상주 || '';
+                        document.getElementById('funeral-date').textContent = item.발인 || '';
+                        document.getElementById('burial-place').textContent = item.장지 || '';
                     } else {
-                        document.getElementById('room-number').textContent = roomNumber;
-                        document.getElementById('deceased-name').textContent = '정보 없음';
-                        document.getElementById('mourner-name').textContent = '정보 없음';
-                        document.getElementById('funeral-date').textContent = '정보 없음';
-                        document.getElementById('burial-place').textContent = '정보 없음';
+                        container.style.display = 'none'; // 데이터가 없으면 화면 전체를 숨김
                     }
                 })
                 .catch(error => {
                     console.error('데이터를 불러오는 중 오류가 발생했습니다:', error);
+                    container.style.display = 'grid';
                     document.getElementById('room-number').textContent = roomNumber;
                     document.getElementById('deceased-name').textContent = '데이터 로딩 오류';
                     document.getElementById('mourner-name').textContent = '데이터 로딩 오류';
@@ -280,11 +330,15 @@
                 });
         }
         
-        if (roomNumber) {
-            fetchData();
-            setInterval(fetchData, 30000);
+        const urlParams = new URLSearchParams(window.location.search);
+        const roomNumber = urlParams.get('room');
+
+        if (!roomNumber) {
+            // URL에 room 파라미터가 없으면 room=1로 리디렉션
+            window.location.replace(`${window.location.pathname}?room=1`);
         } else {
-            document.body.innerHTML = '<div style="text-align:center; padding: 20px;">URL에 분향실 번호가 없습니다. 예: funeral.html?room=1</div>';
+            fetchData();
+            setInterval(fetchData, REFRESH_INTERVAL);
         }
     </script>
 </body>
