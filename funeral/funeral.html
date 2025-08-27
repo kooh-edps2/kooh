@@ -31,8 +31,8 @@
             width: 100%;
             height: 100vh;
             display: grid;
-            /* 제목 박스 높이를 줄이고, 메인 콘텐츠 영역을 늘림 */
-            grid-template-rows: 12% 78% 10%; 
+            /* 상단 박스 높이를 줄이고 메인 콘텐츠 영역을 늘림 */
+            grid-template-rows: 10% 80% 10%; 
             grid-template-columns: 1fr;
             padding: 1vh;
             box-sizing: border-box;
@@ -207,6 +207,11 @@
 
         /* 세로 모니터용 반응형 레이아웃 */
         @media (orientation: portrait) {
+            .container {
+                /* 상단 박스 높이 줄임, 메인 콘텐츠 영역을 줄이고 하단 영역을 늘려 '장지'가 보이도록 함 */
+                grid-template-rows: 10% 72% 18%; 
+            }
+
             /* 글자 크기 단위를 vh에서 vw로 변경하여 너비에 맞게 조절 */
             .room-number, .room-title {
                 font-size: 10vw;
@@ -219,8 +224,10 @@
             /* 메인 콘텐츠를 "고인명"과 "상주" 두 개의 독립된 행으로 재구성 */
             .main-content {
                 display: grid;
-                grid-template-columns: 30% 70%;
-                grid-template-rows: 50% 50%;
+                /* 세로 제목에 맞춰 라벨 칸을 줄이고 데이터 칸을 늘림 */
+                grid-template-columns: 15% 85%;
+                /* 고인명보다 상주 영역의 세로 비율을 늘림 */
+                grid-template-rows: 40% 60%;
                 grid-template-areas:
                     "deceased-label deceased-data"
                     "mourner-label  mourner-data";
@@ -230,9 +237,13 @@
             .header-row, .data-row {
                 display: contents;
             }
-            .header-cell { font-size: 7vw; border: none; }
-            .data-cell { font-size: 9vw; border: none; padding: 1vh; }
-            #mourner-name { font-size: 7vw; }
+            .header-cell {
+                font-size: 7vw;
+                border: none;
+                writing-mode: vertical-rl; /* 텍스트 세로 쓰기 */
+                letter-spacing: 0.5vw; /* 글자 간격 조정 */
+            }
+            .data-cell { font-size: 8vw; border: none; padding: 1vh; } /* 고인명 글자 크기 줄임 */
 
             .header-cell:nth-child(1) { /* 고인명 라벨 */
                 grid-area: deceased-label;
@@ -249,9 +260,11 @@
             }
             #mourner-name { /* 상주 데이터 */
                 grid-area: mourner-data;
-                justify-content: center;
-                text-align: center;
-                padding: 1vh;
+                /* 상주 글자 크기 키우고 왼쪽 정렬 */
+                font-size: 6vw; 
+                justify-content: flex-start;
+                text-align: left;
+                padding: 1vh 1vh 1vh 2vh; /* 왼쪽 패딩 추가 */
             }
 
             /* 발인/장지 영역을 세로로 쌓음 */
