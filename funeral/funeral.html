@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>구병원 장례식장</title>
+    <title>구병원 분향실</title>
     <style>
         @font-face {
             font-family: 'S-CoreDream';
@@ -31,8 +31,8 @@
             width: 100%;
             height: 100vh;
             display: grid;
-            /* 상단 박스 높이를 줄이고 메인 콘텐츠 영역을 늘림 */
-            grid-template-rows: 10% 80% 10%; 
+            /* 전체 레이아웃 비율 조정 (하단 잘림 방지) */
+            grid-template-rows: 12% 76% 10%; 
             grid-template-columns: 1fr;
             padding: 1vh;
             box-sizing: border-box;
@@ -46,7 +46,7 @@
             display: flex;
             align-items: center;
             justify-content: space-between; /* 양쪽 정렬로 변경 */
-            padding: 0 3vh; /* 좌우 여백 */
+            padding: 1vh 3vh; /* 상하 여백 추가 */
         }
 
         .title-group {
@@ -85,8 +85,8 @@
 
         .header-row {
             display: grid;
-            /* 고인명 칸을 30%로 줄이고 상주 칸을 70%로 넓힘 */
-            grid-template-columns: 30% 70%;
+            /* 고인명 칸을 줄이고 상주 칸을 넓힘 */
+            grid-template-columns: 27% 73%;
             border-bottom: 2px solid #e0e0e0;
         }
 
@@ -107,8 +107,8 @@
 
         .data-row {
             display: grid;
-            /* 고인명 칸을 30%로 줄이고 상주 칸을 70%로 넓힘 */
-            grid-template-columns: 30% 70%;
+            /* 고인명 칸을 줄이고 상주 칸을 넓힘 */
+            grid-template-columns: 27% 73%;
             text-align: center;
         }
         
@@ -128,8 +128,8 @@
 
         /* 고인명 글자 크기 더 크게 조정 */
         #deceased-name {
-            font-size: 8.5vh; /* 폰트 크기를 줄여 여백 확보 */
-            padding: 2.5vh 1vh; /* 상하 여백 늘림 */
+            font-size: 9vh; /* 폰트 크기 키움 */
+            padding: 2.5vh 1vh;
         }
 
         /* 상주 글자 크기 더 크게 조정 */
@@ -209,8 +209,8 @@
         /* 세로 모니터용 반응형 레이아웃 */
         @media (orientation: portrait) {
             .container {
-                /* 상단 박스 높이 줄임, 메인 콘텐츠 영역을 줄이고 하단 영역을 늘려 '장지'가 보이도록 함 */
-                grid-template-rows: 10% 72% 18%; 
+                /* 전체 레이아웃 비율 조정 (하단 잘림 방지) */
+                grid-template-rows: 10% 70% 18%; 
             }
 
             /* 글자 크기 단위를 vh에서 vw로 변경하여 너비에 맞게 조절 */
@@ -227,8 +227,8 @@
                 display: grid;
                 /* 세로 제목에 맞춰 라벨 칸을 줄이고 데이터 칸을 늘림 */
                 grid-template-columns: 15% 85%;
-                /* 고인명보다 상주 영역의 세로 비율을 늘림 */
-                grid-template-rows: 40% 60%;
+                /* 고인명 라인 높이를 줄이고 상주 라인 높이를 늘림 */
+                grid-template-rows: 35% 65%;
                 grid-template-areas:
                     "deceased-label deceased-data"
                     "mourner-label  mourner-data";
@@ -254,8 +254,8 @@
             #deceased-name { /* 고인명 데이터 */
                 grid-area: deceased-data;
                 border-bottom: 2px solid #e0e0e0;
-                font-size: 11vw; /* 세로 모드 폰트 크기 조정 */
-                padding: 2.5vw 1vh; /* 세로 모드 상하 여백 늘림 */
+                font-size: 9vw; /* 세로 모드 폰트 크기 조정 */
+                padding: 4vw 1vh; /* 세로 모드 상하 여백 늘림 */
             }
             .header-cell:nth-child(2) { /* 상주 라벨 */
                 grid-area: mourner-label;
@@ -264,10 +264,11 @@
             #mourner-name { /* 상주 데이터 */
                 grid-area: mourner-data;
                 /* 상주 글자 크기 키우고 왼쪽 정렬 */
-                font-size: 6vw; 
+                font-size: clamp(4.5vw, 5vw, 6vw); /* 최소/선호/최대 크기 설정으로 안정성 확보 */
                 justify-content: flex-start;
                 text-align: left;
                 padding: 1vh 1vh 1vh 2vh; /* 왼쪽 패딩 추가 */
+                font-size-adjust: 0.5; 
             }
 
             /* 발인/장지 영역을 세로로 쌓음 */
