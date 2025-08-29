@@ -500,7 +500,16 @@
             dateContainer.textContent = `(${year}년 ${month}월 ${day}일 ${dayOfWeek}요일)`;
 
             //마감 시간 지정
-            const isAfternoon = today.getHours() > 12 || (today.getHours() === 12 && today.getMinutes() >= 30);
+            let isAfternoon;
+            const dayIndex = today.getDay(); // 0 for Sunday, 6 for Saturday
+            const currentHour = today.getHours();
+            const currentMinute = today.getMinutes();
+
+            if (dayIndex === 0 || dayIndex === 6) { // 일요일 또는 토요일
+                isAfternoon = currentHour >= 13;
+            } else { // 평일
+                isAfternoon = currentHour > 12 || (currentHour === 12 && currentMinute >= 30);
+            }
             checkSessionStatus(isAfternoon);
 
             const amTitle = document.querySelector('.time-slot-box.am .schedule-section-title');
