@@ -131,8 +131,7 @@
             );
             display: none; /* 기본적으로 숨김 */
             justify-content: center; /* 가로 중앙 정렬 */
-            align-items: flex-start; /* 세로 상단 정렬 */
-            padding-top: 0.5vh; /* 제목 위치와 비슷하게 상단 여백 추가 */
+            align-items: center; /* 세로 중앙 정렬 */
             border-radius: 8px;
             z-index: 3; /* 다른 모든 오버레이와 내용을 덮도록 최상위로 설정 */
         }
@@ -140,11 +139,11 @@
         .finished-overlay span {
             background-color: #495057; /* 텍스트를 감싸는 회색 박스 배경 */
             color: #f8f9fa; /* 밝은 텍스트 색상 */
-            padding: 0.1vh 1.5vh; /* 제목과 유사하게, 높이를 줄임 */
-            border-radius: 4px; /* 제목과 유사한 둥글기 */
-            border: 1px solid #6c757d;
+            padding: 1vh 2.5vh; /* 박스 내부 여백 */
+            border-radius: 10px; /* 박스 모서리 둥글게 */
+            border: 2px solid #6c757d; /* 박스 테두리 */
             box-shadow: 0 2px 8px rgba(0,0,0,0.5); /* 입체감을 위한 그림자 */
-            font-size: 4.5vh; /* 제목과 유사한 크기 */
+            font-size: 6vh; /* 글자 크기 확대 */
             font-family: 'GmarketSansMedium', sans-serif;
             font-weight: bold;
             text-shadow: 0 0 5px rgba(0,0,0,0.7); /* 텍스트 그림자 조정 */
@@ -273,73 +272,9 @@
             z-index: 1; /* 텍스트 위에 오버레이가 위치하도록 설정 */
         }
 
-        .title-inactive {
-            color: #adb5bd; /* 비활성 제목 색상 */
-        }
-
-        .text-inactive {
-            color: #adb5bd; /* 꺼진 항목 텍스트 색상 (더 밝게) */
-        }
-
-        /* LED Indicator Styles */
-        .led-indicator {
-            display: inline-block;
-            width: 1.8vh;
-            height: 1.8vh;
-            border-radius: 25%; /* 모서리가 둥근 사각형 모양으로 변경 */
-            margin-right: 0.6em;
-            vertical-align: middle;
-            border: 1px solid rgba(0, 0, 0, 0.3);
-        }
-
-        /*
         .dept-icon {
             margin-right: 0.4em;
             vertical-align: middle;
-        }
-        */
-
-        .led-surg { /* 외과: 파랑 */
-            background-color: #3498db;
-            box-shadow: 0 0 8px #3498db;
-            animation: pulse-animation 1.8s infinite ease-in-out;
-        }
-        .led-im { /* 내과: 주황 */
-            background-color: #f39c12;
-            box-shadow: 0 0 8px #f39c12;
-            animation: pulse-animation 1.8s infinite ease-in-out;
-        }
-        .led-thyroid { /* 갑상선유방센터: 빨강 */
-            background-color: #e74c3c;
-            box-shadow: 0 0 8px #e74c3c;
-            animation: pulse-animation 1.8s infinite ease-in-out;
-        }
-        .led-ns { /* 신경외과: 보라 */
-            background-color: #9b59b6;
-            box-shadow: 0 0 8px #9b59b6;
-            animation: pulse-animation 1.8s infinite ease-in-out;
-        }
-        .led-os { /* 정형외과: 녹색 */
-            background-color: #2ecc71;
-            box-shadow: 0 0 8px #2ecc71;
-            animation: pulse-animation 1.8s infinite ease-in-out;
-        }
-        .led-obgy { /* 산부인과: 분홍 */
-            background-color: #e84393;
-            box-shadow: 0 0 8px #e84393;
-            animation: pulse-animation 1.8s infinite ease-in-out;
-        }
-        .led-off { /* 꺼진 상태: 회색 */
-            background-color: #495057;
-            box-shadow: inset 0 0 4px rgba(0,0,0,0.4);
-        }
-        @keyframes pulse-animation {
-            0%, 100% {
-                opacity: 1;
-            }
-            50% {
-                opacity: 0.6;
-            }
         }
 
         .circular-timer {
@@ -399,7 +334,9 @@
     <div class="schedule-container">
         <!-- 오전 진료 -->
         <div class="time-slot-box am">
-            <div class="finished-overlay"><span>오전 진료 마감</span></div>
+            <div class="finished-overlay">
+                <span>오전 진료 마감</span>
+            </div>
             <h2 class="schedule-section-title">오전 진료</h2>
             <table>
                 <thead>
@@ -446,7 +383,6 @@
             '토': '944320917',
         };
 
-        /*
         const departmentIcons = {
             '외과': '⚕️',
             '내과': '🩺',
@@ -455,7 +391,6 @@
             '정형외과': '🦾',
             '산부인과': '🤰'
         };
-        */
 
         const getDepartment = (row, index) => {
             if (!row || !row.c[index]) return '';
@@ -478,9 +413,22 @@
             }, 50);
         }
 
-        function checkSessionStatus(isAfternoon) {
+        function checkAmSessionStatus() {
+            const now = new Date();
             const amOverlay = document.querySelector('.time-slot-box.am .finished-overlay');
-            if (isAfternoon) { 
+            let isFinished;
+            const dayIndex = now.getDay(); // 0 for Sunday, 6 for Saturday
+            const currentHour = now.getHours();
+            const currentMinute = now.getMinutes();
+            
+            // --- 오전 진료 마감 시간 설정 ---
+            if (dayIndex === 0 || dayIndex === 6) { // 일요일 또는 토요일
+                isFinished = currentHour >= 13;
+            } else { // 평일
+                isFinished = currentHour > 12 || (currentHour === 12 && currentMinute >= 30);
+            }
+
+            if (isFinished) { 
                 amOverlay.style.display = 'flex';
             } else {
                 amOverlay.style.display = 'none';
@@ -499,31 +447,7 @@
             const dateContainer = document.querySelector('.current-date');
             dateContainer.textContent = `(${year}년 ${month}월 ${day}일 ${dayOfWeek}요일)`;
 
-            //마감 시간 지정
-            let isAfternoon;
-            const dayIndex = today.getDay(); // 0 for Sunday, 6 for Saturday
-            const currentHour = today.getHours();
-            const currentMinute = today.getMinutes();
-
-            if (dayIndex === 0 || dayIndex === 6) { // 일요일 또는 토요일
-                isAfternoon = currentHour >= 13;
-            } else { // 평일
-                isAfternoon = currentHour > 12 || (currentHour === 12 && currentMinute >= 30);
-            }
-            checkSessionStatus(isAfternoon);
-
-            const amTitle = document.querySelector('.time-slot-box.am .schedule-section-title');
-            const pmTitle = document.querySelector('.time-slot-box.pm .schedule-section-title');
-
-            if (isAfternoon) {
-                // 오후일 때: 오전 제목을 비활성화
-                amTitle.classList.add('title-inactive');
-                pmTitle.classList.remove('title-inactive');
-            } else {
-                // 오전일 때: 오후 제목을 비활성화
-                amTitle.classList.remove('title-inactive');
-                pmTitle.classList.add('title-inactive');
-            }
+            checkAmSessionStatus(); // 시간 확인하여 오버레이 표시
 
             const currentDayName = dayNames[today.getDay()];
             const currentGid = gidMap[currentDayName];
@@ -579,9 +503,7 @@
                         }
                     }
 
-                    const renderGroupedRows = (tbody, dataRows, sessionType) => {
-                        const isSessionActive = (sessionType === 'am' && !isAfternoon) || (sessionType === 'pm' && isAfternoon);
-
+                    const renderGroupedRows = (tbody, dataRows) => {
                         tbody.innerHTML = '';
                         for (let i = 0; i < dataRows.length; i++) {
                             const currentRow = dataRows[i];
@@ -605,21 +527,7 @@
 
                             const doctor = currentRow.c[doctorIndex] ? currentRow.c[doctorIndex].v : '';
                             const status = currentRow.c[statusIndex] ? currentRow.c[statusIndex].v : '';
-
-                            const ledColorMap = {
-                                '외과': 'led-surg',
-                                '내과': 'led-im',
-                                '갑상선유방센터': 'led-thyroid',
-                                '신경외과': 'led-ns',
-                                '정형외과': 'led-os',
-                                '산부인과': 'led-obgy'
-                            };
-                            const isDoctorInactive = status === '휴진' || status === '마감';
-                            const isLedOff = isDoctorInactive || !isSessionActive;
-                            const ledColorClass = ledColorMap[currentDept] || 'led-off';
-                            const ledClass = isLedOff ? 'led-off' : ledColorClass;
-                            const ledIndicator = `<span class="led-indicator ${ledClass}"></span>`;
-                            // const icon = departmentIcons[currentDept] ? `<span class="dept-icon">${departmentIcons[currentDept]}</span>` : '';
+                            const icon = departmentIcons[currentDept] ? `<span class="dept-icon">${departmentIcons[currentDept]}</span>` : '';
 
                             let statusClass = '';
                             if (status === '휴진') statusClass = 'closed';
@@ -635,18 +543,16 @@
                                 statusCellContent = `<span class="highlight-text ${highlightColorClass}">${cellContent}</span>`;
                             }
 
-                            const textInactiveClass = isLedOff ? 'text-inactive' : '';
-
                             const tr = document.createElement('tr');
                             tr.className = groupClass.trim();
 
-                            if (isDoctorInactive) {
+                            if (status === '휴진' || status === '마감') {
                                 tr.classList.add('row-inactive');
                             }
                             
                             tr.innerHTML = `
-                                <td class="${textInactiveClass}">${ledIndicator}${currentDept}</td>
-                                <td class="${textInactiveClass}">${doctor}</td>
+                                <td>${icon}${currentDept}</td>
+                                <td>${doctor}</td>
                                 <td class="${statusClass}">${statusCellContent}</td>
                             `;
                             tbody.appendChild(tr);
@@ -655,8 +561,8 @@
 
                     const amScheduleBody = document.querySelector('#am-schedule-body');
                     const pmScheduleBody = document.querySelector('#pm-schedule-body');
-                    renderGroupedRows(amScheduleBody, amRows, 'am');
-                    renderGroupedRows(pmScheduleBody, pmRows, 'pm');
+                    renderGroupedRows(amScheduleBody, amRows);
+                    renderGroupedRows(pmScheduleBody, pmRows);
                 })
                 .catch(e => {
                     console.error('Fetch error:', e);
