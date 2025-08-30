@@ -51,7 +51,6 @@
             box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
             width: 98%;
             box-sizing: border-box;
-            cursor: pointer; /* 테스트 모드 활성화를 위해 커서 변경 */
         }
 
         .title-group {
@@ -132,8 +131,7 @@
             );
             display: none; /* 기본적으로 숨김 */
             justify-content: center; /* 가로 중앙 정렬 */
-            align-items: flex-start; /* 세로 상단 정렬 */
-            padding-top: 0.5vh; /* 제목 위치와 비슷하게 상단 여백 추가 */
+            align-items: center; /* 세로 중앙 정렬 */
             border-radius: 8px;
             z-index: 3; /* 다른 모든 오버레이와 내용을 덮도록 최상위로 설정 */
         }
@@ -141,11 +139,11 @@
         .finished-overlay span {
             background-color: #495057; /* 텍스트를 감싸는 회색 박스 배경 */
             color: #f8f9fa; /* 밝은 텍스트 색상 */
-            padding: 0.1vh 1.5vh; /* 제목과 유사하게, 높이를 줄임 */
-            border-radius: 4px; /* 제목과 유사한 둥글기 */
-            border: 1px solid #6c757d;
+            padding: 1vh 2.5vh; /* 박스 내부 여백 */
+            border-radius: 10px; /* 박스 모서리 둥글게 */
+            border: 2px solid #6c757d; /* 박스 테두리 */
             box-shadow: 0 2px 8px rgba(0,0,0,0.5); /* 입체감을 위한 그림자 */
-            font-size: 4.5vh; /* 제목과 유사한 크기 */
+            font-size: 6vh; /* 글자 크기 확대 */
             font-family: 'GmarketSansMedium', sans-serif;
             font-weight: bold;
             text-shadow: 0 0 5px rgba(0,0,0,0.7); /* 텍스트 그림자 조정 */
@@ -155,7 +153,7 @@
             font-family: 'GmarketSansMedium', sans-serif;
             text-align: center;
             color: #f8f9fa;
-            margin: 0 0 0.5vh 0;
+            margin: 0 0 0.3vh 0;
             font-size: 4.5vh;
             font-weight: bold;
         }
@@ -163,14 +161,14 @@
         table {
             width: 100%;
             border-collapse: collapse;
-            font-size: 3.7vh; /* 글자 크기 재조정 */
+            font-size: 3.5vh; /* 글자 크기 재조정 */
             border-spacing: 0;
             table-layout: fixed;
         }
 
         th, td {
             border: 0;
-            padding: 0.2vh 0.5vh; /* 수직 여백 최소화, 수평 여백 유지 */
+            padding: 0.1vh 0.5vh; /* 수직 여백 최소화, 수평 여백 유지 */
             text-align: center;
             white-space: normal;
         }
@@ -250,7 +248,7 @@
             border-top: 2px solid #6c757d;
         }
         .group-end td {
-            box-shadow: inset 0 -2px 0 #6c757d; /* 레이아웃에 영향을 주지 않는 box-shadow로 변경 */
+            border-bottom: 2px solid #6c757d;
         }
 
         /* Overlay effect for inactive rows */
@@ -274,160 +272,9 @@
             z-index: 1; /* 텍스트 위에 오버레이가 위치하도록 설정 */
         }
 
-        .title-inactive {
-            color: #adb5bd; /* 비활성 제목 색상 */
-        }
-
-        .text-inactive {
-            color: #adb5bd; /* 꺼진 항목 텍스트 색상 (더 밝게) */
-        }
-
-        /* LED Indicator Styles */
-        .led-indicator {
-            position: relative; /* 자식 요소의 위치 기준 */
-            display: inline-block;
-            width: 2.4vh; /* 잘림 현상 방지를 위해 크기 미세 조정 */
-            height: 2.4vh; /* 잘림 현상 방지를 위해 크기 미세 조정 */
-            margin-right: 0.6em;
-            vertical-align: middle; /* 텍스트와의 수직 정렬 */
-        }
-
-        /* 중앙에 깜빡이는 점 */
-        .led-indicator .led-dot {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            width: 65%; /* 타이머 내부에 위치하도록 크기 조정 */
-            height: 65%;
-            transform: translate(-50%, -50%);
-            border-radius: 50%;
-            border: 1px solid rgba(0, 0, 0, 0.3);
-        }
-
-        /* SVG 타이머 */
-        .led-indicator .led-chart {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-        }
-
-        .led-chart .led-circle-bg {
-            fill: none;
-            stroke: #4a5c6d;
-            stroke-width: 4;
-        }
-
-        .led-chart .led-circle {
-            fill: none;
-            stroke-width: 4;
-            stroke-linecap: round;
-            transform: rotate(-90deg);
-            transform-origin: 50% 50%;
-            stroke-dasharray: 100, 100;
-        }
-        
-        /*
         .dept-icon {
             margin-right: 0.4em;
             vertical-align: middle;
-        }
-        */
-
-        /* 외과: 파랑 */
-        .led-surg .led-dot {
-            background-color: #00BFFF;
-            box-shadow: 0 0 8px #00BFFF;
-            animation: pulse-animation 5.0s infinite linear;
-        }
-        .led-surg .led-circle {
-            stroke: #00BFFF;
-            animation: led-progress-animation 5.0s linear infinite;
-        }
-
-        /* 내과: 주황 */
-        .led-im .led-dot {
-            background-color: #FF6D00;
-            box-shadow: 0 0 8px #FF6D00;
-            animation: pulse-animation 5.0s infinite linear;
-        }
-        .led-im .led-circle {
-            stroke: #FF6D00;
-            animation: led-progress-animation 5.0s linear infinite;
-        }
-
-        /* 갑상선유방센터: 핫핑크 */
-        .led-thyroid .led-dot {
-            background-color: #FF69B4; /* 핫핑크 */
-            box-shadow: 0 0 8px #FF69B4;
-            animation: pulse-animation 5.0s infinite linear;
-        }
-        .led-thyroid .led-circle {
-            stroke: #FF69B4;
-            animation: led-progress-animation 5.0s linear infinite;
-        }
-
-        /* 신경외과: 노랑 */
-        .led-ns .led-dot {
-            background-color: #FFD600;
-            box-shadow: 0 0 8px #FFD600;
-            animation: pulse-animation 5.0s infinite linear;
-        }
-        .led-ns .led-circle {
-            stroke: #FFD600;
-            animation: led-progress-animation 5.0s linear infinite;
-        }
-
-        /* 정형외과: 녹색 */
-        .led-os .led-dot {
-            background-color: #4CAF50;
-            box-shadow: 0 0 8px #4CAF50;
-            animation: pulse-animation 5.0s infinite linear;
-        }
-        .led-os .led-circle {
-            stroke: #4CAF50;
-            animation: led-progress-animation 5.0s linear infinite;
-        }
-
-        /* 산부인과: 빨강 */
-        .led-obgy .led-dot {
-            background-color: #FF1744;
-            box-shadow: 0 0 8px #FF1744;
-            animation: pulse-animation 5.0s infinite linear;
-        }
-        .led-obgy .led-circle {
-            stroke: #FF1744;
-            animation: led-progress-animation 5.0s linear infinite;
-        }
-
-        /* 꺼진 상태: 회색 */
-        .led-off .led-dot {
-            background-color: #495057;
-            box-shadow: inset 0 0 4px rgba(0,0,0,0.4);
-        }
-        .led-off .led-chart {
-            display: none; /* 꺼진 상태에서는 타이머 숨김 */
-        }
-
-        @keyframes pulse-animation {
-            0%, 100% {
-                opacity: 1;
-            }
-            50% {
-                opacity: 0.3;
-            }
-        }
-        @keyframes led-progress-animation {
-            0% {
-                stroke-dashoffset: 100;
-            }
-            50% {
-                stroke-dashoffset: 0;
-            }
-            100% {
-                stroke-dashoffset: -100;
-            }
         }
 
         .circular-timer {
@@ -462,29 +309,6 @@
             color: #6c757d;
             user-select: none;
         }
-
-        /* 테스트 모드 컨트롤 UI */
-        #test-mode-controls {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-
-        #test-mode-controls select, #test-mode-controls button {
-            background-color: #495057;
-            color: #f8f9fa;
-            border: 1px solid #6c757d;
-            border-radius: 4px;
-            padding: 0.5vh 1vh;
-            font-family: 'S-CoreDream', sans-serif;
-            font-size: 2vh;
-            cursor: pointer;
-        }
-
-        #test-mode-controls button {
-            background-color: #e53935; /* 닫기 버튼 색상 */
-            font-weight: bold;
-        }
     </style>
 </head>
 <body>
@@ -493,14 +317,6 @@
             <img id="logo" src="kooh_logo.png" alt="병원 로고" onerror="this.src='/kooh_logo.png'; this.onerror=function(){this.style.display='none'};">
             <h1 class="main-title">구병원 진료 스케줄</h1>
             <p class="current-date"></p>
-        </div>
-        <div id="test-mode-controls" style="display: none;">
-            <select id="test-day-select"></select>
-            <select id="test-ampm-select">
-                <option value="am">오전</option>
-                <option value="pm">오후</option>
-            </select>
-            <button id="test-mode-close-btn">닫기</button>
         </div>
         <div id="refresh-timer" class="circular-timer">
             <svg viewBox="0 0 36 36" class="circular-chart">
@@ -518,7 +334,9 @@
     <div class="schedule-container">
         <!-- 오전 진료 -->
         <div class="time-slot-box am">
-            <div class="finished-overlay"><span>오전 진료 마감</span></div>
+            <div class="finished-overlay">
+                <span>오전 진료 마감</span>
+            </div>
             <h2 class="schedule-section-title">오전 진료</h2>
             <table>
                 <thead>
@@ -565,12 +383,6 @@
             '토': '944320917',
         };
 
-        let isTestMode = false;
-        let testModeDay = null;
-        let testModeIsAfternoon = null;
-        let refreshIntervalId = null;
-
-        /*
         const departmentIcons = {
             '외과': '⚕️',
             '내과': '🩺',
@@ -579,7 +391,6 @@
             '정형외과': '🦾',
             '산부인과': '🤰'
         };
-        */
 
         const getDepartment = (row, index) => {
             if (!row || !row.c[index]) return '';
@@ -602,9 +413,22 @@
             }, 50);
         }
 
-        function checkSessionStatus(isAfternoon) {
+        function checkAmSessionStatus() {
+            const now = new Date();
             const amOverlay = document.querySelector('.time-slot-box.am .finished-overlay');
-            if (isAfternoon) { 
+            let isFinished;
+            const dayIndex = now.getDay(); // 0 for Sunday, 6 for Saturday
+            const currentHour = now.getHours();
+            const currentMinute = now.getMinutes();
+            
+            // --- 오전 진료 마감 시간 설정 ---
+            if (dayIndex === 0 || dayIndex === 6) { // 일요일 또는 토요일
+                isFinished = currentHour >= 13;
+            } else { // 평일
+                isFinished = currentHour > 12 || (currentHour === 12 && currentMinute >= 30);
+            }
+
+            if (isFinished) { 
                 amOverlay.style.display = 'flex';
             } else {
                 amOverlay.style.display = 'none';
@@ -612,51 +436,24 @@
         }
 
         function fetchSchedule() {
-            if (!isTestMode) {
-                const refreshTimerCircle = document.querySelector('#refresh-timer .circle');
-                restartCircularTimerAnimation(refreshTimerCircle, REFRESH_INTERVAL);
-            }
+            const refreshTimerCircle = document.querySelector('#refresh-timer .circle');
+            restartCircularTimerAnimation(refreshTimerCircle, REFRESH_INTERVAL);
 
-            let dayOfWeek, isAfternoon, displayDayName;
+            const today = new Date();
+            const year = today.getFullYear();
+            const month = today.getMonth() + 1;
+            const day = today.getDate();
+            const dayOfWeek = dayNames[today.getDay()];
             const dateContainer = document.querySelector('.current-date');
+            dateContainer.textContent = `(${year}년 ${month}월 ${day}일 ${dayOfWeek}요일)`;
 
-            if (isTestMode) {
-                dayOfWeek = testModeDay;
-                isAfternoon = testModeIsAfternoon;
-                displayDayName = dayOfWeek;
-                dateContainer.textContent = `(테스트 모드: ${displayDayName}요일)`;
-            } else {
-                const today = new Date();
-                const year = today.getFullYear();
-                const month = today.getMonth() + 1;
-                const day = today.getDate();
-                dayOfWeek = dayNames[today.getDay()];
-                displayDayName = dayOfWeek;
-                dateContainer.textContent = `(${year}년 ${month}월 ${day}일 ${displayDayName}요일)`;
+            checkAmSessionStatus(); // 시간 확인하여 오버레이 표시
 
-                const dayIndex = today.getDay();
-                const currentHour = today.getHours();
-                const currentMinute = today.getMinutes();
-                isAfternoon = (dayIndex === 0 || dayIndex === 6) ? currentHour >= 13 : (currentHour > 12 || (currentHour === 12 && currentMinute >= 30));
-            }
-
-            checkSessionStatus(isAfternoon);
-
-            const amTitle = document.querySelector('.time-slot-box.am .schedule-section-title');
-            const pmTitle = document.querySelector('.time-slot-box.pm .schedule-section-title');
-
-            if (isAfternoon) {
-                amTitle.classList.add('title-inactive');
-                pmTitle.classList.remove('title-inactive');
-            } else {
-                amTitle.classList.remove('title-inactive');
-                pmTitle.classList.add('title-inactive');
-            }
-
-            const currentGid = gidMap[dayOfWeek];
+            const currentDayName = dayNames[today.getDay()];
+            const currentGid = gidMap[currentDayName];
             
             if (!currentGid) {
-                console.error(`Error: Gid for ${dayOfWeek} not found.`);
+                console.error(`Error: Gid for ${currentDayName} not found.`);
                 return;
             }
 
@@ -670,6 +467,7 @@
                     return res.text();
                 })
                 .then(text => {
+                    // Google's JSONP-like response needs to be cleaned up
                     const match = text.match(/google\.visualization\.Query\.setResponse\(([\s\S]+)\)/);
                     if (!match || !match[1]) {
                         throw new Error('Google Sheet 응답 형식을 파싱할 수 없습니다.');
@@ -705,9 +503,7 @@
                         }
                     }
 
-                    const renderGroupedRows = (tbody, dataRows, sessionType) => {
-                        const isSessionActive = (sessionType === 'am' && !isAfternoon) || (sessionType === 'pm' && isAfternoon);
-
+                    const renderGroupedRows = (tbody, dataRows) => {
                         tbody.innerHTML = '';
                         for (let i = 0; i < dataRows.length; i++) {
                             const currentRow = dataRows[i];
@@ -731,29 +527,7 @@
 
                             const doctor = currentRow.c[doctorIndex] ? currentRow.c[doctorIndex].v : '';
                             const status = currentRow.c[statusIndex] ? currentRow.c[statusIndex].v : '';
-
-                            const ledColorMap = {
-                                '외과': 'led-surg',
-                                '내과': 'led-im',
-                                '갑상선유방센터': 'led-thyroid',
-                                '신경외과': 'led-ns',
-                                '정형외과': 'led-os',
-                                '산부인과': 'led-obgy'
-                            };
-                            const isDoctorInactive = status === '휴진' || status === '마감';
-                            const isLedOff = isDoctorInactive || !isSessionActive;
-                            const ledColorClass = ledColorMap[currentDept] || 'led-off';
-                            const ledClass = isLedOff ? 'led-off' : ledColorClass;
-                            const ledIndicator = `
-                                <div class="led-indicator ${ledClass}">
-                                    <div class="led-dot"></div>
-                                    <svg viewBox="0 0 36 36" class="led-chart">
-                                        <path class="led-circle-bg" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" />
-                                        <path class="led-circle" stroke-dasharray="100, 100" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" />
-                                    </svg>
-                                </div>
-                            `;
-                            // const icon = departmentIcons[currentDept] ? `<span class="dept-icon">${departmentIcons[currentDept]}</span>` : '';
+                            const icon = departmentIcons[currentDept] ? `<span class="dept-icon">${departmentIcons[currentDept]}</span>` : '';
 
                             let statusClass = '';
                             if (status === '휴진') statusClass = 'closed';
@@ -769,20 +543,16 @@
                                 statusCellContent = `<span class="highlight-text ${highlightColorClass}">${cellContent}</span>`;
                             }
 
-                            const textInactiveClass = isLedOff ? 'text-inactive' : '';
-
                             const tr = document.createElement('tr');
                             tr.className = groupClass.trim();
 
-                            if (isDoctorInactive) {
+                            if (status === '휴진' || status === '마감') {
                                 tr.classList.add('row-inactive');
                             }
                             
                             tr.innerHTML = `
-                                <td class="${textInactiveClass}">
-                                    ${ledIndicator}${currentDept}
-                                </td>
-                                <td class="${textInactiveClass}">${doctor}</td>
+                                <td>${icon}${currentDept}</td>
+                                <td>${doctor}</td>
                                 <td class="${statusClass}">${statusCellContent}</td>
                             `;
                             tbody.appendChild(tr);
@@ -791,8 +561,8 @@
 
                     const amScheduleBody = document.querySelector('#am-schedule-body');
                     const pmScheduleBody = document.querySelector('#pm-schedule-body');
-                    renderGroupedRows(amScheduleBody, amRows, 'am');
-                    renderGroupedRows(pmScheduleBody, pmRows, 'pm');
+                    renderGroupedRows(amScheduleBody, amRows);
+                    renderGroupedRows(pmScheduleBody, pmRows);
                 })
                 .catch(e => {
                     console.error('Fetch error:', e);
@@ -804,76 +574,8 @@
                 });
         }
 
-        // 테스트 모드 활성화
-        document.querySelector('.title-box').addEventListener('click', (e) => {
-            // 컨트롤 UI나 그 자식 요소를 클릭했거나, 이미 테스트 모드일 경우 아무것도 하지 않음
-            if (e.target.closest('#test-mode-controls') || isTestMode) {
-                return;
-            }
-
-            isTestMode = true;
-            if (refreshIntervalId) {
-                clearInterval(refreshIntervalId);
-                refreshIntervalId = null;
-            }
-
-            document.getElementById('test-mode-controls').style.display = 'flex';
-            document.getElementById('refresh-timer').style.display = 'none';
-
-            const daySelect = document.getElementById('test-day-select');
-            daySelect.innerHTML = '';
-            dayNames.forEach(day => {
-                const option = document.createElement('option');
-                option.value = day;
-                option.textContent = day;
-                daySelect.appendChild(option);
-            });
-
-            const today = new Date();
-            const currentDayName = dayNames[today.getDay()];
-            const currentHour = today.getHours();
-            const currentMinute = today.getMinutes();
-            const dayIndex = today.getDay();
-            const isCurrentAfternoon = (dayIndex === 0 || dayIndex === 6) ? currentHour >= 13 : (currentHour > 12 || (currentHour === 12 && currentMinute >= 30));
-
-            daySelect.value = currentDayName;
-            document.getElementById('test-ampm-select').value = isCurrentAfternoon ? 'pm' : 'am';
-
-            testModeDay = currentDayName;
-            testModeIsAfternoon = isCurrentAfternoon;
-
-            fetchSchedule();
-        });
-
-        // 테스트 모드 비활성화
-        document.getElementById('test-mode-close-btn').addEventListener('click', () => {
-            isTestMode = false;
-            testModeDay = null;
-            testModeIsAfternoon = null;
-
-            document.getElementById('test-mode-controls').style.display = 'none';
-            document.getElementById('refresh-timer').style.display = 'block';
-
-            fetchSchedule();
-            if (!refreshIntervalId) {
-                refreshIntervalId = setInterval(fetchSchedule, REFRESH_INTERVAL);
-            }
-        });
-
-        // 테스트 모드 컨트롤러 변경 이벤트
-        document.getElementById('test-day-select').addEventListener('change', (e) => {
-            testModeDay = e.target.value;
-            fetchSchedule();
-        });
-        document.getElementById('test-ampm-select').addEventListener('change', (e) => {
-            testModeIsAfternoon = (e.target.value === 'pm');
-            fetchSchedule();
-        });
-
-
-        // 초기 실행
+        setInterval(fetchSchedule, REFRESH_INTERVAL);
         fetchSchedule();
-        refreshIntervalId = setInterval(fetchSchedule, REFRESH_INTERVAL);
     </script>
 </body>
 </html>
