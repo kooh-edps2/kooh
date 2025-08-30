@@ -291,8 +291,8 @@
         .led-indicator {
             position: relative; /* 자식 요소의 위치 기준 */
             display: inline-block;
-            width: 2.4vh; /* 잘림 현상 방지를 위해 크기 미세 조정 */
-            height: 2.4vh; /* 잘림 현상 방지를 위해 크기 미세 조정 */
+            width: 3.7vh; /* 원 크기 키움 (글자 높이에 맞춤) */
+            height: 3.7vh; /* 원 크기 키움 (글자 높이에 맞춤) */
             margin-right: 0.6em;
             vertical-align: middle; /* 텍스트와의 수직 정렬 */
         }
@@ -321,16 +321,15 @@
         .led-chart .led-circle-bg {
             fill: none;
             stroke: #4a5c6d;
-            stroke-width: 4;
+            stroke-width: 5; /* 고리 굵기 키움 */
         }
 
         .led-chart .led-circle {
             fill: none;
-            stroke-width: 4;
+            stroke-width: 5; /* 고리 굵기 키움 */
             stroke-linecap: round;
-            transform: rotate(-90deg);
             transform-origin: 50% 50%;
-            stroke-dasharray: 100, 100;
+            stroke-dasharray: 30, 100; /* 고정 색상 영역 30%로 늘림 */
         }
         
         /*
@@ -344,66 +343,66 @@
         .led-surg .led-dot {
             background-color: #00BFFF;
             box-shadow: 0 0 8px #00BFFF;
-            animation: pulse-animation 5.0s infinite linear;
+            animation: pulse-animation 2.5s infinite linear;
         }
         .led-surg .led-circle {
             stroke: #00BFFF;
-            animation: led-progress-animation 5.0s linear infinite;
+            animation: rotate-animation 2.5s linear infinite;
         }
 
         /* 내과: 주황 */
         .led-im .led-dot {
             background-color: #FF6D00;
             box-shadow: 0 0 8px #FF6D00;
-            animation: pulse-animation 5.0s infinite linear;
+            animation: pulse-animation 2.5s infinite linear;
         }
         .led-im .led-circle {
             stroke: #FF6D00;
-            animation: led-progress-animation 5.0s linear infinite;
+            animation: rotate-animation 2.5s linear infinite;
         }
 
         /* 갑상선유방센터: 핫핑크 */
         .led-thyroid .led-dot {
             background-color: #FF69B4; /* 핫핑크 */
             box-shadow: 0 0 8px #FF69B4;
-            animation: pulse-animation 5.0s infinite linear;
+            animation: pulse-animation 2.5s infinite linear;
         }
         .led-thyroid .led-circle {
             stroke: #FF69B4;
-            animation: led-progress-animation 5.0s linear infinite;
+            animation: rotate-animation 2.5s linear infinite;
         }
 
         /* 신경외과: 노랑 */
         .led-ns .led-dot {
             background-color: #FFD600;
             box-shadow: 0 0 8px #FFD600;
-            animation: pulse-animation 5.0s infinite linear;
+            animation: pulse-animation 2.5s infinite linear;
         }
         .led-ns .led-circle {
             stroke: #FFD600;
-            animation: led-progress-animation 5.0s linear infinite;
+            animation: rotate-animation 2.5s linear infinite;
         }
 
         /* 정형외과: 녹색 */
         .led-os .led-dot {
             background-color: #4CAF50;
             box-shadow: 0 0 8px #4CAF50;
-            animation: pulse-animation 5.0s infinite linear;
+            animation: pulse-animation 2.5s infinite linear;
         }
         .led-os .led-circle {
             stroke: #4CAF50;
-            animation: led-progress-animation 5.0s linear infinite;
+            animation: rotate-animation 2.5s linear infinite;
         }
 
         /* 산부인과: 빨강 */
         .led-obgy .led-dot {
             background-color: #FF1744;
             box-shadow: 0 0 8px #FF1744;
-            animation: pulse-animation 5.0s infinite linear;
+            animation: pulse-animation 2.5s infinite linear;
         }
         .led-obgy .led-circle {
             stroke: #FF1744;
-            animation: led-progress-animation 5.0s linear infinite;
+            animation: rotate-animation 2.5s linear infinite;
         }
 
         /* 꺼진 상태: 회색 */
@@ -423,15 +422,13 @@
                 opacity: 0.3;
             }
         }
-        @keyframes led-progress-animation {
-            0% {
-                stroke-dashoffset: 100;
+        
+        @keyframes rotate-animation {
+            from {
+                transform: rotate(0deg);
             }
-            50% {
-                stroke-dashoffset: 0;
-            }
-            100% {
-                stroke-dashoffset: -100;
+            to {
+                transform: rotate(360deg);
             }
         }
 
@@ -764,7 +761,7 @@
                                     <div class="led-dot"></div>
                                     <svg viewBox="0 0 36 36" class="led-chart">
                                         <path class="led-circle-bg" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" />
-                                        <path class="led-circle" stroke-dasharray="100, 100" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" />
+                                        <path class="led-circle" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" />
                                     </svg>
                                 </div>
                             `;
