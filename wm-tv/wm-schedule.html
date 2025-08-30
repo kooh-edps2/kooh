@@ -184,6 +184,12 @@
             padding-left: 0.5em; /* 진료과 왼쪽 여백 추가 축소 */
         }
 
+        .dept-cell {
+            display: flex;
+            align-items: center;
+            gap: 0.6em; /* 인디케이터와 텍스트 사이 간격 */
+        }
+
         th:nth-child(2), td:nth-child(2) {
             width: 27%;
         }
@@ -294,7 +300,8 @@
             width: 3.7vh; /* 원 크기 키움 (글자 높이에 맞춤) */
             height: 3.7vh; /* 원 크기 키움 (글자 높이에 맞춤) */
             margin-right: 0.6em;
-            vertical-align: middle; /* 텍스트와의 수직 정렬 */
+            vertical-align: middle; /* 텍스트와의 수직 정렬 - flexbox 사용 시 대체됨 */
+            flex-shrink: 0; /* flex container 내에서 줄어들지 않도록 설정 */
         }
 
         /* 중앙에 깜빡이는 점 */
@@ -792,7 +799,7 @@
                             
                             tr.innerHTML = `
                                 <td class="${textInactiveClass}">
-                                    ${ledIndicator}${currentDept}
+                                    <div class="dept-cell">${ledIndicator}<span>${currentDept}</span></div>
                                 </td>
                                 <td class="${textInactiveClass}">${doctor}</td>
                                 <td class="${statusClass}">${statusCellContent}</td>
@@ -810,7 +817,7 @@
                     console.error('Fetch error:', e);
                     const amScheduleBody = document.querySelector('#am-schedule-body');
                     const pmScheduleBody = document.querySelector('#pm-schedule-body');
-                    const errorMessage = `데이터를 불러오는 데 실패했습니다. 네트워크 또는 구글 시트 설정을 확인해주세요. (오류: ${e.message})`;
+                    const errorMessage = `데이터를 불러오는 데 실패했습니다. 네트워크 또는 데이터 설정을 확인해주세요. (오류: ${e.message})`;
                     amScheduleBody.innerHTML = `<tr><td colspan="3" style="color: red; white-space: normal;">${errorMessage}</td></tr>`;
                     pmScheduleBody.innerHTML = '';
                 });
