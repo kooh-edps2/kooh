@@ -209,6 +209,11 @@
             color: #212529; /* 가독성을 위해 어두운 글자색으로 변경 */
         }
 
+        .header-inactive {
+            background-color: #495057 !important;
+            color: #adb5bd !important;
+        }
+
         .closed,
         .finished {
             color: #f26d6d; /* 조금 연한 붉은색으로 통일 */
@@ -644,13 +649,23 @@
 
             const amTitle = document.querySelector('.time-slot-box.am .schedule-section-title');
             const pmTitle = document.querySelector('.time-slot-box.pm .schedule-section-title');
+            const amHeaders = document.querySelectorAll('.time-slot-box.am th');
+            const pmHeaders = document.querySelectorAll('.time-slot-box.pm th');
 
             if (isAfternoon) {
+                // 오후일 때: 오전 제목과 헤더를 비활성화
                 amTitle.classList.add('title-inactive');
+                amHeaders.forEach(th => th.classList.add('header-inactive'));
+
                 pmTitle.classList.remove('title-inactive');
+                pmHeaders.forEach(th => th.classList.remove('header-inactive'));
             } else {
+                // 오전일 때: 오후 제목과 헤더를 비활성화
                 amTitle.classList.remove('title-inactive');
+                amHeaders.forEach(th => th.classList.remove('header-inactive'));
+
                 pmTitle.classList.add('title-inactive');
+                pmHeaders.forEach(th => th.classList.add('header-inactive'));
             }
 
             const currentGid = gidMap[dayOfWeek];
