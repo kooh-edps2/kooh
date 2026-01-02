@@ -156,21 +156,21 @@
             text-align: center;
             color: #f8f9fa;
             margin: 0 0 0.5vh 0;
-            font-size: 4.5vh;
+            font-size: 4.4vh; /* 제목 글자 크기 복원 */
             font-weight: bold;
         }
 
         table {
             width: 100%;
             border-collapse: collapse;
-            font-size: 3.7vh; /* 글자 크기 재조정 */
+            font-size: 3.5vh; /* 테이블 글자 크기 복원 */
             border-spacing: 0;
             table-layout: fixed;
         }
 
         th, td {
             border: 0;
-            padding: 0.2vh 0.5vh; /* 수직 여백 최소화, 수평 여백 유지 */
+            padding: 0.1vh 0.5vh; /* 테이블 셀 여백 복원 */
             text-align: center;
             white-space: normal;
         }
@@ -297,8 +297,8 @@
         .led-indicator {
             position: relative; /* 자식 요소의 위치 기준 */
             display: inline-block;
-            width: 3.7vh; /* 원 크기 키움 (글자 높이에 맞춤) */
-            height: 3.7vh; /* 원 크기 키움 (글자 높이에 맞춤) */
+            width: 3.7vh; /* LED 인디케이터 크기 복원 */
+            height: 3.7vh; /* LED 인디케이터 크기 복원 */
             margin-right: 0.6em;
             vertical-align: middle; /* 텍스트와의 수직 정렬 - flexbox 사용 시 대체됨 */
             flex-shrink: 0; /* flex container 내에서 줄어들지 않도록 설정 */
