@@ -143,13 +143,13 @@
         /* 하단 박스를 가로로 정렬하기 위한 컨테이너 */
         .footer-container {
             display: grid;
-            grid-template-columns: 1fr 1fr; /* 2개의 열로 나란히 배치 */
+            grid-template-columns: 3.5fr 6.5fr; /* 발인:장지 비율 조정 (장지 영역 확대) */
             gap: 1vh; /* 두 박스 사이의 간격 */
         }
         
         .info-box {
             display: grid;
-            grid-template-columns: 35% 65%;
+            grid-template-columns: 23vh 1fr; /* 제목 영역을 고정 너비(13vh)로 설정하여 동일하게 맞춤 */
             background-color: #ffffff;
             border-radius: 10px;
             box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
@@ -172,7 +172,7 @@
         /* 발인/장지 데이터 글자 크기 더 크게 조정 */
         .info-data {
             color: #2c3e50;
-            font-size: 3.5vh; /* 데이터 글자 크기 줄임 */
+            font-size: 4.5vh; /* 데이터 글자 크기 키움 */
             text-align: center;
             display: flex;
             align-items: center;
@@ -275,6 +275,9 @@
             .footer-container {
                 grid-template-columns: 1fr;
                 grid-template-rows: 1fr 1fr;
+            }
+            .info-box {
+                grid-template-columns: 23% 77%; /* 세로 모드 제목 너비 축소 (35% -> 23%) */
             }
             .info-header, .info-data {
                 font-size: 5vw;
@@ -402,7 +405,9 @@
                         document.getElementById('deceased-name').textContent = deceasedName.trim() ? `故 ${deceasedName}` : '';
                         document.getElementById('mourner-name').textContent = item.상주 || '';
                         document.getElementById('funeral-date').textContent = item.발인 || '';
-                        document.getElementById('burial-place').textContent = item.장지 || '';
+                        
+                        // 장지 데이터의 '|' 또는 줄바꿈을 ' / '로 변경하여 한 줄로 표시
+                        document.getElementById('burial-place').textContent = (item.장지 || '').replace(/\||\n/g, '  /  ');
                         
                         // 데이터 입력 후 폰트 크기 자동 조절 실행
                         fitTextToBox('funeral-date');
