@@ -1,0 +1,356 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>인증예상질문 퀴즈 (전직원+원무)</title>
+    <style>
+        :root {
+            --primary: #2563eb;
+            --secondary: #db2777; /* 원무과 색상 */
+            --bg: #f3f4f6;
+            --card-bg: #ffffff;
+            --text-main: #1f2937;
+            --text-sub: #6b7280;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", sans-serif;
+            background-color: var(--bg);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            padding: 20px;
+            box-sizing: border-box;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 500px;
+            text-align: center;
+        }
+
+        /* Progress Bar */
+        .progress-container {
+            width: 100%;
+            height: 8px;
+            background-color: #e5e7eb;
+            border-radius: 4px;
+            margin-bottom: 24px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background-color: var(--primary);
+            width: 0%;
+            transition: width 0.3s ease;
+        }
+
+        /* Card Style */
+        .card-area {
+            perspective: 1000px;
+            height: 350px; /* 고정 높이 */
+            margin-bottom: 24px;
+            cursor: pointer;
+        }
+
+        .card {
+            width: 100%;
+            height: 100%;
+            position: relative;
+            background: var(--card-bg);
+            border-radius: 20px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.05);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 30px;
+            box-sizing: border-box;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            border: 1px solid rgba(0,0,0,0.05);
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 30px rgba(0,0,0,0.1);
+        }
+
+        .category-badge {
+            position: absolute;
+            top: 24px;
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 700;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+        }
+
+        .cat-common { background-color: #dbeafe; color: var(--primary); }
+        .cat-admin { background-color: #fce7f3; color: var(--secondary); }
+
+        /* 문제 카운터 스타일 추가 */
+        .q-counter {
+            position: absolute;
+            top: 24px;
+            right: 24px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            color: #9ca3af;
+            background: #f3f4f6;
+            padding: 6px 12px;
+            border-radius: 15px;
+        }
+
+        .question-text {
+            font-size: 1.35rem;
+            font-weight: 700;
+            color: var(--text-main);
+            line-height: 1.5;
+            margin: 20px 0;
+            word-break: keep-all;
+        }
+
+        .answer-area {
+            display: none;
+            margin-top: 20px;
+            padding-top: 20px;
+            border-top: 2px dashed #e5e7eb;
+            width: 100%;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .answer-text {
+            font-size: 1.1rem;
+            color: var(--primary);
+            font-weight: 600;
+            line-height: 1.6;
+            word-break: keep-all;
+        }
+
+        .answer-text.admin-answer {
+            color: var(--secondary);
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Buttons */
+        .btn-group {
+            display: flex;
+            gap: 12px;
+            justify-content: center;
+        }
+
+        .btn {
+            padding: 14px 28px;
+            border: none;
+            border-radius: 12px;
+            font-size: 1rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.2s;
+            width: 100%;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+        }
+
+        .btn-show {
+            background-color: var(--primary);
+            color: white;
+        }
+        
+        .btn-show:hover { background-color: #1d4ed8; }
+
+        .btn-next {
+            background-color: #1f2937;
+            color: white;
+            display: none;
+        }
+
+        .btn-next:hover { background-color: #111827; }
+
+        .btn-restart {
+            background-color: #10b981;
+            color: white;
+            display: none;
+        }
+
+        /* Result Screen */
+        .result-screen {
+            display: none;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            height: 100%;
+        }
+        
+        .result-icon { font-size: 3rem; margin-bottom: 20px; }
+        .result-title { font-size: 1.5rem; font-weight: bold; margin-bottom: 10px; color: #1f2937; }
+        .result-desc { color: #6b7280; margin-bottom: 30px; }
+
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <!-- Progress Bar -->
+    <div class="progress-container">
+        <div class="progress-fill" id="progress"></div>
+    </div>
+    
+    <!-- Quiz Card -->
+    <div class="card-area" id="cardArea">
+        <div class="card" id="quizCard" onclick="showAnswer()">
+            <span class="category-badge cat-common" id="category">전직원 공통</span>
+            <div class="q-counter" id="qCounter">1 / 13</div> <!-- 카운터 엘리먼트 추가 -->
+            <div class="question-text" id="question">질문 로딩 중...</div>
+            
+            <div class="answer-area" id="answerArea">
+                <div class="answer-text" id="answer">정답 내용</div>
+            </div>
+
+            <!-- 완료 화면 -->
+            <div class="result-screen" id="resultScreen">
+                <div class="result-icon">🎉</div>
+                <div class="result-title">학습 완료!</div>
+                <div class="result-desc">모든 예상 질문을 확인했습니다.</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Controls -->
+    <div class="btn-group" id="btnGroup">
+        <button class="btn btn-show" id="actionBtn" onclick="showAnswer()">정답 확인</button>
+        <button class="btn btn-next" id="nextBtn" onclick="nextQuestion()">다음 문제</button>
+        <button class="btn btn-restart" id="restartBtn" onclick="restartQuiz()">처음부터 다시하기</button>
+    </div>
+</div>
+
+<script>
+    // 데이터 소스 (PDF 기반 추출)
+    const quizData = [
+        // 전직원 공통
+        { cat: "전직원", q: "환자 확인 방법 2가지와 확인해야 하는 시점은?", a: "① 개방형 질문으로 이름 확인<br>② 등록번호(또는 생년월일) 확인<br><br><b>[시점]</b> 투약 전, 검사 전, 처치/시술 전" },
+        { cat: "전직원", q: "손위생을 반드시 수행해야 하는 4가지 시점은?", a: "① 환자 접촉 전<br>② 청결/무균 처치 전<br>③ 체액 노출 위험 후<br>④ 환자 주변 환경 접촉 후" },
+        { cat: "전직원", q: "화재 발견 시 초기 대응 순서는?", a: "① '불이야' 외치기<br>② 화재 신고(원내번호/119)<br>③ 소화기 초기 진화(가능 시)<br>④ 대피 유도<br>(※소화기는 시연 금지, 말로 설명)" },
+        { cat: "전직원", q: "심폐소생술(CPR) 상황 발생 시 행동 요령은?", a: "① 최초 발견자: 도움 요청 및 압박 시작<br>② 요청 받은 직원: 심폐소생술팀 호출(코드블루)<br>③ 제세동기 가져오기" },
+        { cat: "전직원", q: "개인정보 보호를 위해 자리를 비울 때 해야 할 일은?", a: "반드시 <b>로그아웃</b> 하거나 <b>화면보호기(암호설정)</b> 실행" },
+        { cat: "전직원", q: "우리 병원의 미션과 비전은?", a: "암기할 필요 없음.<br>게시물의 <b>위치</b>를 정확히 알고, 가리키며 설명할 수 있으면 됨." },
+        { cat: "전직원", q: "환자의 권리와 의무는 어디에 있나요?", a: "원내 게시판 및 안내문(핸드북)에 비치됨.<br>해당 위치를 안내하고 설명 가능해야 함." },
+        { cat: "전직원", q: "환자 안전사고(적신호 사건 등) 발생 시 보고 체계는?", a: "부서장에게 즉시 보고 후, 정해진 절차에 따라 <b>환자안전 보고서</b> 작성" },
+        
+        // 원무과 전용
+        { cat: "원무과", q: "입원 수속 시 환자에게 반드시 설명해야 할 내용은?", a: "① 입원 비용(비급여 포함)<br>② 입원 생활 안내<br>③ 환자의 권리와 의무" },
+        { cat: "원무과", q: "응급환자 접수 시 설명해야 할 정보는?", a: "① 응급의료 관리료<br>② 진료 절차 및 대기 시간 안내" },
+        { cat: "원무과", q: "환자 불만 및 고충 접수 시 처리 절차는?", a: "경청/공감 → 해당 부서/담당자 연결 → 해결 방안 모색 → 결과 피드백<br>(관련 기록 남기기)" },
+        { cat: "원무과", q: "잡상인 등 외부인 출입 통제 절차는?", a: "방문 목적 확인 → 제한 구역 안내 → 불응 시 보안 요원 호출" },
+        { cat: "원무과", q: "진료비 및 제증명 발급 민원 응대 요령은?", a: "관련 규정(수수료, 구비 서류, 본인 확인)을 근거로 친절하고 정확하게 안내" }
+    ];
+
+    let currentIdx = 0;
+    
+    // DOM Elements
+    const els = {
+        card: document.getElementById('quizCard'),
+        category: document.getElementById('category'),
+        counter: document.getElementById('qCounter'), // 카운터 연결
+        question: document.getElementById('question'),
+        answerArea: document.getElementById('answerArea'),
+        answer: document.getElementById('answer'),
+        progress: document.getElementById('progress'),
+        actionBtn: document.getElementById('actionBtn'),
+        nextBtn: document.getElementById('nextBtn'),
+        restartBtn: document.getElementById('restartBtn'),
+        resultScreen: document.getElementById('resultScreen'),
+        btnGroup: document.getElementById('btnGroup')
+    };
+
+    function initQuiz() {
+        currentIdx = 0;
+        renderQuestion();
+        els.resultScreen.style.display = 'none';
+        els.question.style.display = 'block';
+        els.category.style.display = 'inline-block';
+        els.counter.style.display = 'block'; // 초기화 시 표시
+        els.btnGroup.style.display = 'flex';
+        els.restartBtn.style.display = 'none';
+    }
+
+    function renderQuestion() {
+        if (currentIdx >= quizData.length) {
+            showResult();
+            return;
+        }
+
+        const item = quizData[currentIdx];
+        
+        // 카운터 업데이트 (현재번호 / 전체갯수)
+        els.counter.textContent = `${currentIdx + 1} / ${quizData.length}`;
+
+        // Category Styling
+        els.category.textContent = item.cat + " 예상질문";
+        if (item.cat === "원무과") {
+            els.category.className = "category-badge cat-admin";
+            els.answer.className = "answer-text admin-answer";
+        } else {
+            els.category.className = "category-badge cat-common";
+            els.answer.className = "answer-text";
+        }
+
+        // Content
+        els.question.innerHTML = item.q;
+        els.answer.innerHTML = item.a;
+        
+        // Reset State
+        els.answerArea.style.display = 'none';
+        els.actionBtn.style.display = 'block';
+        els.nextBtn.style.display = 'none';
+        
+        // Progress Bar
+        const progress = (currentIdx / quizData.length) * 100;
+        els.progress.style.width = `${progress}%`;
+    }
+
+    function showAnswer() {
+        // 이미 정답이 나와있으면 무시 (또는 다음 문제로 넘어가기 기능을 넣을수도 있음)
+        if (els.answerArea.style.display === 'block') return;
+
+        els.answerArea.style.display = 'block';
+        els.actionBtn.style.display = 'none';
+        els.nextBtn.style.display = 'block';
+    }
+
+    function nextQuestion() {
+        currentIdx++;
+        renderQuestion();
+    }
+
+    function showResult() {
+        els.progress.style.width = '100%';
+        els.category.style.display = 'none';
+        els.counter.style.display = 'none'; // 결과 화면에선 카운터 숨김
+        els.question.style.display = 'none';
+        els.answerArea.style.display = 'none';
+        els.resultScreen.style.display = 'flex';
+        
+        els.actionBtn.style.display = 'none';
+        els.nextBtn.style.display = 'none';
+        els.restartBtn.style.display = 'block';
+    }
+
+    function restartQuiz() {
+        initQuiz();
+    }
+
+    // Start
+    initQuiz();
+</script>
+
+</body>
+</html>

@@ -1,0 +1,643 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>4주기 인증평가 핵심 30제</title>
+    <style>
+        :root {
+            --primary: #0056b3;
+            --secondary: #6c757d;
+            --success: #28a745;
+            --danger: #dc3545;
+            --light: #f8f9fa;
+            --dark: #343a40;
+            --white: #ffffff;
+            --shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+
+        body {
+            font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            background-color: #e9ecef;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            padding: 20px;
+            color: var(--dark);
+        }
+
+        .container {
+            width: 100%;
+            max-width: 700px;
+            background: var(--white);
+            border-radius: 15px;
+            box-shadow: var(--shadow);
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            position: relative;
+        }
+
+        /* Header & Progress */
+        .header {
+            padding: 20px 30px;
+            background-color: var(--primary);
+            color: white;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .title { font-size: 1.2rem; font-weight: bold; }
+        .score-board { font-size: 1rem; font-weight: 600; }
+
+        .progress-container {
+            width: 100%;
+            height: 8px;
+            background-color: #e0e0e0;
+        }
+
+        .progress-bar {
+            height: 100%;
+            background-color: #ffc107;
+            width: 0%;
+            transition: width 0.3s ease;
+        }
+
+        /* Quiz Body */
+        .quiz-body {
+            padding: 30px;
+            flex: 1;
+            padding-bottom: 20px;
+        }
+
+        .question-header-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+            border-bottom: 2px solid #f1f3f5;
+            padding-bottom: 10px;
+        }
+
+        .question-label {
+            color: var(--primary);
+            font-weight: 800;
+            font-size: 1rem;
+        }
+
+        .question-counter {
+            background-color: #e9ecef;
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-weight: 700;
+            font-size: 0.9rem;
+            color: var(--dark);
+        }
+
+        .question-text {
+            font-size: 1.35rem;
+            font-weight: bold;
+            margin-bottom: 25px;
+            line-height: 1.5;
+        }
+
+        .options-grid {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .option-btn {
+            padding: 16px 20px;
+            border: 2px solid #e0e0e0;
+            border-radius: 12px;
+            background: white;
+            color: var(--dark);
+            font-size: 1.05rem;
+            text-align: left;
+            cursor: pointer;
+            transition: all 0.2s;
+            position: relative;
+            line-height: 1.4;
+        }
+
+        .option-btn:hover:not(.disabled) {
+            border-color: var(--primary);
+            background-color: #f0f7ff;
+            transform: translateY(-2px);
+        }
+
+        .option-btn.correct {
+            border-color: var(--success);
+            background-color: #d4edda;
+            color: #155724;
+            font-weight: bold;
+        }
+
+        .option-btn.wrong {
+            border-color: var(--danger);
+            background-color: #f8d7da;
+            color: #721c24;
+            opacity: 0.8;
+        }
+
+        .option-btn.disabled {
+            cursor: default;
+            pointer-events: none;
+        }
+
+        /* Feedback Section */
+        .feedback {
+            margin-top: 25px;
+            padding: 20px;
+            border-radius: 10px;
+            background-color: #f8f9fa;
+            border-left: 6px solid var(--primary);
+            display: none;
+            animation: fadeIn 0.3s;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+        }
+
+        .feedback-title { font-weight: 900; margin-bottom: 8px; display: block; color: var(--primary); }
+        .feedback-text { font-size: 1rem; line-height: 1.6; color: #495057; }
+
+        /* Footer Buttons */
+        .footer {
+            padding: 20px 30px;
+            border-top: 1px solid #eee;
+            display: flex;
+            justify-content: space-between; /* 양쪽 끝 정렬 */
+            background-color: #fdfdfd;
+        }
+
+        .btn {
+            padding: 12px 25px;
+            border: none;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background 0.2s;
+            min-width: 100px;
+        }
+
+        .btn-prev {
+            background-color: var(--secondary);
+            color: white;
+        }
+        .btn-prev:hover { background-color: #5a6268; }
+        .btn-prev:disabled { opacity: 0.5; cursor: not-allowed; }
+
+        .btn-next {
+            background-color: var(--primary);
+            color: white;
+        }
+        .btn-next:hover { background-color: #004494; }
+
+        /* Result Screen */
+        .result-screen {
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            padding: 50px 30px;
+        }
+
+        .score-circle {
+            width: 160px;
+            height: 160px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--primary), #004494);
+            color: white;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 2.8rem;
+            font-weight: bold;
+            margin-bottom: 30px;
+            box-shadow: 0 10px 20px rgba(0,86,179,0.3);
+        }
+
+        .result-msg { font-size: 1.4rem; margin-bottom: 40px; font-weight: 600; line-height: 1.5; }
+        
+        .btn-retry { 
+            background-color: #6c757d; 
+            color: white; 
+            padding: 15px 40px;
+            font-size: 1.1rem;
+        }
+        .btn-retry:hover { background-color: #5a6268; }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div class="header" id="header">
+        <div class="title">인증평가 핵심 30제</div>
+        <div class="score-board">점수: <span id="currentScore">0</span></div>
+    </div>
+    <div class="progress-container" id="progressContainer">
+        <div class="progress-bar" id="progressBar"></div>
+    </div>
+
+    <!-- Quiz Section -->
+    <div class="quiz-body" id="quizBody">
+        <div class="question-header-row">
+            <span class="question-label">QUESTION</span>
+            <span class="question-counter" id="qCounterDisplay">1 / 30</span>
+        </div>
+        
+        <div class="question-text" id="qText">질문 내용이 여기에 표시됩니다.</div>
+        
+        <div class="options-grid" id="optionsGrid">
+            <!-- 옵션 버튼들이 스크립트로 생성됨 -->
+        </div>
+
+        <div class="feedback" id="feedback">
+            <span class="feedback-title" id="feedbackTitle">💡 정답 해설</span>
+            <span class="feedback-text" id="feedbackText">해설 내용</span>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <div class="footer" id="footer">
+        <button class="btn btn-prev" id="prevBtn">&larr; 이전</button>
+        <button class="btn btn-next" id="nextBtn">다음 &rarr;</button>
+    </div>
+
+    <!-- Result Section -->
+    <div class="result-screen" id="resultScreen">
+        <div class="score-circle" id="finalScore">0점</div>
+        <div class="result-msg" id="resultMsg">수고하셨습니다!</div>
+        <button class="btn btn-retry" onclick="location.reload()">처음부터 다시 풀기</button>
+    </div>
+</div>
+
+<script>
+    /* PDF 내용을 바탕으로 구성된 30문항 데이터 */
+    const quizData = [
+        {
+            q: "환자 확인 시 반드시 사용해야 하는 두 가지 지표로 올바른 것은?",
+            o: ["환자 이름, 병실 호수", "환자 이름, 등록번호(또는 생년월일)", "환자 이름, 진료과", "등록번호, 병실 호수"],
+            a: 1,
+            desc: "환자 확인은 반드시 '개방형 질문'으로 환자 이름을 확인하고, 등록번호 또는 주민등록상 생년월일 중 하나를 추가하여 2가지 이상으로 확인해야 합니다."
+        },
+        {
+            q: "다음 중 환자 확인을 필수적으로 시행해야 하는 시점이 아닌 것은?",
+            o: ["의약품 투여 전", "혈액제제 투여 전", "식사 배식 전", "진료, 처치 및 시술 전"],
+            a: 2,
+            desc: "환자 확인 필수 시점: 의약품 투여 전, 혈액제제 투여 전, 검사 시행 전, 진료/처치/시술 전입니다."
+        },
+        {
+            q: "손위생을 수행해야 하는 4가지 시점(WHO 기준)에 포함되지 않는 것은?",
+            o: ["환자 접촉 전", "청결/무균 처치 전", "의무기록 작성 후", "환자 주변 환경 접촉 후"],
+            a: 2,
+            desc: "손위생 4시점: 1.환자 접촉 전, 2.청결/무균 처치 전, 3.체액 노출 위험 후, 4.환자 주변 환경 접촉 후 (+환자 접촉 후)"
+        },
+        {
+            q: "화재 발생 시 병원 직원의 초기 대응 순서(R.A.C.E)로 올바른 것은?",
+            o: ["진압 - 신고 - 대피 - 전파", "전파 - 신고 - 초기진압 - 대피", "대피 - 신고 - 전파 - 진압", "신고 - 대피 - 진압 - 전파"],
+            a: 1,
+            desc: "1.발견 즉시 '불이야' 전파 및 신고, 2.소화기/소화전으로 초기 진압(가능시), 3.환자 대피 유도 순서로 진행합니다."
+        },
+        {
+            q: "조사위원이 '소화기 사용법을 보여주세요'라고 할 때 올바른 대처는?",
+            o: ["안전핀을 뽑고 실제로 분사한다.", "실제 분사는 하지 않고 말로 설명하며 시늉만 한다.", "소화기 위치만 알려준다.", "시설팀 직원을 부른다."],
+            a: 1,
+            desc: "인증 조사 시 소화기는 절대 실제로 분사하지 않으며(위생/안전 문제), 말로 사용법(안전핀 제거→노즐 잡음→손잡이 움킴→분사)을 설명합니다."
+        },
+        {
+            q: "심정지 환자 발견 시 최초 반응자가 가장 먼저 해야 할 행동은?",
+            o: ["제세동기 부착", "도움 요청 및 의식 확인", "즉시 흉부 압박", "주치의에게 전화"],
+            a: 1,
+            desc: "최초 발견자는 즉시 환자의 의식/반응을 확인하고 큰 소리로 주변에 도움을 요청(코드블루 호출 등)해야 합니다."
+        },
+        {
+            q: "원내 심폐소생술 팀(코드블루) 호출 번호나 방법으로 맞는 것은?",
+            o: ["원내 방송으로 직접 방송한다.", "지정된 응급 번호(예: 원내 특정번호)로 전화한다.", "소방서(119)에 먼저 신고한다.", "간호부장님께 전화한다."],
+            a: 1,
+            desc: "병원마다 지정된 비상 연락망(원내 번호)을 통해 교환실이나 방송실에 코드블루 방송을 요청합니다. (본인 병원 번호 숙지 필수)"
+        },
+        {
+            q: "제세동기(Defibrillator) 관리 방법으로 올바르지 않은 것은?",
+            o: ["매일 기능을 점검하고 기록한다.", "항상 충전 상태(Plug-in)를 유지한다.", "젤(Gel)과 패드(Pad)를 함께 비치한다.", "배터리 방전을 위해 코드를 빼둔다."],
+            a: 3,
+            desc: "제세동기는 응급 시 바로 사용할 수 있도록 항상 전원 코드를 꽂아 충전 상태를 유지해야 합니다."
+        },
+        {
+            q: "낙상 예방을 위한 활동으로 적절하지 않은 것은?",
+            o: ["침상 난간(Side rail)을 항상 올려둔다.", "낙상 고위험 환자에게 표식(스티커 등)을 부착한다.", "바닥에 물기가 있어도 자연 건조되길 기다린다.", "환자와 보호자에게 낙상 예방 교육을 실시한다."],
+            a: 2,
+            desc: "바닥의 물기는 미끄러짐의 주원인이므로 발견 즉시 닦거나 제거해야 합니다."
+        },
+        {
+            q: "구두(전화) 처방이 허용되는 예외적인 상황은?",
+            o: ["의사가 처방 내기 귀찮을 때", "응급 상황이나 시술 중 무균 상태일 때", "회진 중일 때", "주말 낮 시간"],
+            a: 1,
+            desc: "구두 처방은 응급 상황, 심폐소생술, 수술/시술 중 무균 시술 등 의무기록 작성이 불가능한 경우에만 제한적으로 허용됩니다."
+        },
+        {
+            q: "구두 처방을 수행할 때 지켜야 할 원칙이 아닌 것은?",
+            o: ["받아 적기 (Write down)", "다시 읽어 확인하기 (Read back)", "처방 내용 확인하기 (Confirm)", "처방 입력은 1주일 내에 하기"],
+            a: 3,
+            desc: "구두 처방은 24시간 이내에 의사가 전산 입력 및 서명을 완료해야 합니다."
+        },
+        {
+            q: "투약의 5가지 원칙(5 Right)에 포함되지 않는 것은?",
+            o: ["정확한 환자 (Right Patient)", "정확한 약물 (Right Drug)", "정확한 용량 (Right Dose)", "정확한 비용 (Right Cost)"],
+            a: 3,
+            desc: "5 Right: 정확한 환자, 약물, 용량, 경로(Route), 시간(Time)입니다. (+기록)"
+        },
+        {
+            q: "고위험 의약품(고농도 전해질, 헤파린 등) 관리 방법으로 옳은 것은?",
+            o: ["일반 약품과 섞어서 보관한다.", "누구나 쉽게 꺼낼 수 있게 개방해 둔다.", "별도 라벨링(빨간색 등)을 하고 분리 보관한다.", "냉동실에 보관한다."],
+            a: 2,
+            desc: "고위험 의약품은 오류 발생 시 치명적이므로 식별 표시(라벨링)를 명확히 하고 다른 약품과 구별하여 분리 보관해야 합니다."
+        },
+        {
+            q: "마약류 의약품 보관 원칙으로 가장 중요한 것은?",
+            o: ["이중 잠금장치가 된 철제 금고에 보관", "냉장고 문짝에 보관", "조제실 책상 위에 보관", "환자 침상 옆에 보관"],
+            a: 0,
+            desc: "마약류는 반드시 '이중 잠금장치'가 설치된 철제 금고 등 견고한 장소에 보관해야 합니다."
+        },
+        {
+            q: "혈액제제 수령 및 수혈 직전 환자 확인은 몇 명이 해야 하는가?",
+            o: ["의사 혼자", "간호사 혼자", "의료인 2인이 함께", "환자 보호자와 간호사"],
+            a: 2,
+            desc: "수혈 오류 방지를 위해 혈액 불출 시, 수령 시, 그리고 수혈 직전에 반드시 의료인 2인이 교차 확인해야 합니다."
+        },
+        {
+            q: "수술/시술 부위 표시에 대한 설명으로 틀린 것은?",
+            o: ["수술/시술에 참여하는 의사가 직접 표시한다.", "환자가 의식이 있는 경우 환자와 함께 확인한다.", "지워지지 않는 전용 펜을 사용한다.", "수술실에 들어가서 마취 후에 표시한다."],
+            a: 3,
+            desc: "부위 표시는 수술/시술 전(병동 또는 대기실 등)에 환자가 의식이 있는 상태에서 확인하며 표시해야 합니다."
+        },
+        {
+            q: "수술/시술 직전, 환자·부위·방법이 맞는지 최종 확인하는 절차를 무엇이라 하는가?",
+            o: ["타임 아웃 (Time out)", "사인 인 (Sign in)", "체크 아웃 (Check out)", "핸드 오버 (Hand over)"],
+            a: 0,
+            desc: "수술/시술 직전 절개(시작) 전에 모든 팀원이 하던 일을 멈추고 환자, 부위, 수술명을 최종 확인하는 과정을 '타임 아웃'이라고 합니다."
+        },
+        {
+            q: "검사 결과가 치명적인 수치(Panic value)일 때 보고하는 절차는?",
+            o: ["다음 날 보고한다.", "문자로만 남겨둔다.", "즉시 해당 의료진에게 보고하고 기록한다(CVR).", "환자에게 직접 알려준다."],
+            a: 2,
+            desc: "위급한 검사 결과(Critical Value)는 즉시 담당 의사나 간호사에게 구두/전화로 보고하고, 보고 일시와 내용을 기록(CVR)해야 합니다."
+        },
+        {
+            q: "욕창 예방을 위한 체위 변경 주기로 권장되는 시간은?",
+            o: ["30분 마다", "2시간 마다", "4시간 마다", "하루에 한 번"],
+            a: 1,
+            desc: "거동이 불편한 환자의 욕창 예방을 위해 최소 2시간마다 체위를 변경해 주어야 합니다."
+        },
+        {
+            q: "통증 재평가는 언제 시행해야 하는가?",
+            o: ["진통제 투여 후 약효가 나타나는 시점", "퇴원할 때", "환자가 잠들었을 때", "식사 직후"],
+            a: 0,
+            desc: "진통제 투여 등 중재 후에는 반드시 약물의 효과가 나타나는 시점(주사제 30분~1시간 후 등)에 재평가를 실시해야 합니다."
+        },
+        {
+            q: "개인정보 보호를 위해 자리를 비울 때 직원이 해야 할 행동은?",
+            o: ["모니터를 끄지 않고 다녀온다.", "로그아웃 하거나 화면보호기(암호설정)를 실행한다.", "비밀번호를 모니터에 붙여둔다.", "옆 직원에게 켜달라고 부탁한다."],
+            a: 1,
+            desc: "환자 정보 유출 방지를 위해 이석 시 반드시 로그아웃하거나 암호가 설정된 화면보호기를 실행해야 합니다."
+        },
+        {
+            q: "환자의 권리와 의무 게시물은 어디에서 확인할 수 있는가?",
+            o: ["원무과장님 서랍 속", "원내 주요 게시판 및 안내 책자(핸드북)", "병원 홈페이지에만 있음", "직원 휴게실"],
+            a: 1,
+            desc: "환자의 권리와 의무는 접수창구, 대기실 등 환자가 보기 쉬운 곳(게시판)과 입원 안내문 등에 게시되어 있어야 합니다."
+        },
+        {
+            q: "환자의 불만이나 고충을 접수했을 때 올바른 태도는?",
+            o: ["내 담당이 아니라고 무시한다.", "우선 경청하고 공감하며 해결 절차를 안내한다.", "법무팀으로 가라고 한다.", "바쁘니 나중에 오라고 한다."],
+            a: 1,
+            desc: "불만 고객 응대 시 우선 경청(Listening)하고 공감(Sympathy)한 뒤, 정해진 절차에 따라 처리하거나 담당 부서를 연결해 줍니다."
+        },
+        {
+            q: "환자에게 사망이나 심각한 신체적/정신적 손상을 초래한 사건을 무엇이라 하는가?",
+            o: ["근접 오류 (Near miss)", "위해 사건 (Adverse event)", "적신호 사건 (Sentinel event)", "단순 실수"],
+            a: 2,
+            desc: "적신호 사건(Sentinel event)은 환자에게 예상치 못한 사망이나 심각한 영구적 손상을 입힌 중대 환자안전사고를 말합니다."
+        },
+        {
+            q: "혈액, 체액 등이 바닥에 엎질러졌을 때 사용하는 도구 세트는?",
+            o: ["빗자루와 쓰레받기", "스필 키트 (Spill Kit)", "걸레와 양동이", "진공 청소기"],
+            a: 1,
+            desc: "혈액/체액 오염 시 감염 확산 방지를 위해 전용 처리 도구인 '스필 키트(Spill Kit)'를 사용하여 절차대로 처리해야 합니다."
+        },
+        {
+            q: "사용 중인 주사바늘에 찔렸을 때 가장 먼저 해야 할 일은?",
+            o: ["그냥 밴드를 붙인다.", "흐르는 물에 씻고 소독 후 부서장에게 보고한다.", "환자에게 화를 낸다.", "퇴근할 때까지 참는다."],
+            a: 1,
+            desc: "혈액 노출 사고 시 즉시 흐르는 물과 비누로 세척하고, 부서장 보고 후 감염관리실 등 절차에 따라 후속 조치를 받아야 합니다."
+        },
+        {
+            q: "유해 화학물질을 취급하는 부서에 반드시 비치해야 하는 자료는?",
+            o: ["직원 연락망", "물질안전보건자료 (MSDS)", "식당 메뉴판", "병원 조직도"],
+            a: 1,
+            desc: "화학물질의 유해성, 응급조치 요령 등이 담긴 MSDS(물질안전보건자료)를 취급 장소에 비치하고 교육해야 합니다."
+        },
+        {
+            q: "입원 시 환자에게 설명해야 할 내용으로 거리가 먼 것은?",
+            o: ["입원 생활 안내(식사시간 등)", "비급여 진료비 안내", "병원장의 개인적인 취미", "화재 시 대피 요령"],
+            a: 2,
+            desc: "입원 시에는 진료비(비급여 포함), 입원 생활 수칙, 환자 권리, 화재 대피 등을 안내해야 합니다."
+        },
+        {
+            q: "감염성 질환자(결핵, 홍역 등) 발생 시 격리 원칙은?",
+            o: ["다인실 한가운데 둔다.", "음압 격리실 또는 1인실에 격리한다.", "복도에 둔다.", "보호자와 함께 귀가시킨다."],
+            a: 1,
+            desc: "공기/비말 전파 감염 환자는 음압 격리실 또는 1인실 격리를 원칙으로 하여 전파를 차단해야 합니다."
+        },
+        {
+            q: "직원이 안전사고(미끄러짐, 폭언 피해 등)를 당했을 때 보고 체계는?",
+            o: ["혼자 해결한다.", "동료에게만 말한다.", "부서장에게 보고하고 직원안전사고 보고서를 작성한다.", "SNS에 올린다."],
+            a: 2,
+            desc: "직원 안전사고 발생 시 즉시 부서장에게 알리고, 원내 규정에 따라 사건 보고서를 작성하여 재발 방지 대책을 수립해야 합니다."
+        }
+    ];
+
+    /* Logic */
+    let currentIdx = 0;
+    // 사용자가 각 문제에 대해 선택한 답(인덱스)을 저장 (미선택 시 null)
+    let userAnswers = new Array(quizData.length).fill(null);
+
+    // DOM Elements
+    const els = {
+        score: document.getElementById('currentScore'),
+        progressBar: document.getElementById('progressBar'),
+        qCounterDisplay: document.getElementById('qCounterDisplay'),
+        qText: document.getElementById('qText'),
+        optionsGrid: document.getElementById('optionsGrid'),
+        feedback: document.getElementById('feedback'),
+        feedbackText: document.getElementById('feedbackText'),
+        prevBtn: document.getElementById('prevBtn'),
+        nextBtn: document.getElementById('nextBtn'),
+        quizBody: document.getElementById('quizBody'),
+        header: document.getElementById('header'),
+        progressContainer: document.getElementById('progressContainer'),
+        footer: document.getElementById('footer'),
+        resultScreen: document.getElementById('resultScreen'),
+        finalScore: document.getElementById('finalScore'),
+        resultMsg: document.getElementById('resultMsg')
+    };
+
+    // Initialize
+    function initQuiz() {
+        currentIdx = 0;
+        userAnswers = new Array(quizData.length).fill(null);
+        updateScore();
+        
+        els.quizBody.style.display = 'block';
+        els.header.style.display = 'flex';
+        els.progressContainer.style.display = 'block';
+        els.footer.style.display = 'flex';
+        els.resultScreen.style.display = 'none';
+        
+        renderQuestion();
+    }
+
+    function calculateScore() {
+        let correctCount = 0;
+        userAnswers.forEach((ans, idx) => {
+            if (ans === quizData[idx].a) {
+                correctCount++;
+            }
+        });
+        // 100점 만점 환산
+        return Math.round((correctCount / quizData.length) * 100);
+    }
+
+    function updateScore() {
+        els.score.innerText = calculateScore();
+    }
+
+    function renderQuestion() {
+        const q = quizData[currentIdx];
+        const isAnswered = userAnswers[currentIdx] !== null;
+        const selectedOption = userAnswers[currentIdx];
+
+        // Header Update (Counter)
+        els.qCounterDisplay.innerText = `${currentIdx + 1} / ${quizData.length}`;
+        
+        // Content Update
+        els.qText.innerText = q.q;
+        
+        // Progress Bar
+        const progress = ((currentIdx + 1) / quizData.length) * 100;
+        els.progressBar.style.width = `${progress}%`;
+
+        // Buttons State
+        els.prevBtn.disabled = (currentIdx === 0);
+        // 마지막 문제에서는 '다음' 버튼 텍스트 변경
+        if (currentIdx === quizData.length - 1) {
+            els.nextBtn.innerHTML = "결과 보기 🏆";
+        } else {
+            els.nextBtn.innerHTML = "다음 &rarr;";
+        }
+
+        // Options Rendering
+        els.optionsGrid.innerHTML = '';
+        q.o.forEach((optText, idx) => {
+            const btn = document.createElement('button');
+            btn.className = 'option-btn';
+            btn.innerText = `  ${optText}`;
+            
+            // 이미 답변한 경우 스타일 적용
+            if (isAnswered) {
+                btn.classList.add('disabled'); // 클릭 방지
+                
+                if (idx === q.a) {
+                    // 정답인 버튼
+                    btn.classList.add('correct');
+                    btn.innerHTML += ' ⭕';
+                } else if (idx === selectedOption) {
+                    // 내가 고른 오답 버튼
+                    btn.classList.add('wrong');
+                    btn.innerHTML += ' ❌';
+                }
+            } else {
+                // 아직 답변 안 함
+                btn.onclick = () => checkAnswer(idx);
+            }
+            els.optionsGrid.appendChild(btn);
+        });
+
+        // Feedback Rendering
+        if (isAnswered) {
+            els.feedbackText.innerText = q.desc;
+            els.feedback.style.display = 'block';
+        } else {
+            els.feedback.style.display = 'none';
+        }
+    }
+
+    function checkAnswer(selectedIdx) {
+        // 상태 저장
+        userAnswers[currentIdx] = selectedIdx;
+        
+        // 점수 업데이트
+        updateScore();
+
+        // 화면 갱신 (스타일 적용 및 해설 표시)
+        renderQuestion();
+        
+        // 모바일 UX: 해설이 나오면 살짝 스크롤
+        setTimeout(() => {
+             els.footer.scrollIntoView({ behavior: 'smooth', block: 'end' });
+        }, 100);
+    }
+
+    // Button Handlers
+    els.prevBtn.onclick = () => {
+        if (currentIdx > 0) {
+            currentIdx--;
+            renderQuestion();
+        }
+    };
+
+    els.nextBtn.onclick = () => {
+        if (currentIdx < quizData.length - 1) {
+            currentIdx++;
+            renderQuestion();
+            els.header.scrollIntoView(); // 맨 위로 스크롤
+        } else {
+            showResult();
+        }
+    };
+
+    function showResult() {
+        els.quizBody.style.display = 'none';
+        els.header.style.display = 'none';
+        els.progressContainer.style.display = 'none';
+        els.footer.style.display = 'none';
+        
+        els.resultScreen.style.display = 'flex';
+        const finalScore = calculateScore();
+        els.finalScore.innerText = `${finalScore}점`;
+
+        if (finalScore >= 90) {
+            els.resultMsg.innerHTML = "대단해요! 🏆<br>인증평가 준비 완료!";
+        } else if (finalScore >= 70) {
+            els.resultMsg.innerHTML = "좋아요! 👍<br>조금만 더 복습하면 완벽해요.";
+        } else {
+            els.resultMsg.innerHTML = "아쉬워요 😅<br>핵심 내용을 다시 확인해보세요.";
+        }
+    }
+
+    // Start
+    initQuiz();
+
+</script>
+</body>
+</html>
